@@ -130,16 +130,33 @@ export default function LoginPage() {
             {loading ? "Signing in..." : "Sign in"}
           </Button>
 
-          <div className="mt-2">
-            <GoogleLoginButton
-              onSuccess={(token) => {
-                // TODO: set auth state, navigate, etc.
-                console.log('Google token:', token);
-              }}
-              onError={(err) => {
-                console.error('Google login error:', err);
-              }}
-            />
+          {/* Mobile button */}
+          <div className="mt-2 flex justify-center w-full lg:hidden">
+            <div className="w-full max-w-xs">
+              <GoogleLoginButton
+                onSuccess={(token) => {
+                  // TODO: set auth state, navigate, etc.
+                  console.log('Google token:', token);
+                }}
+                onError={(err) => {
+                  console.error('Google login error:', err);
+                }}
+              />
+            </div>
+          </div>
+          {/* Desktop button */}
+          <div className="mt-2 flex justify-center w-full hidden lg:flex">
+            <div className="w-full">
+              <GoogleLoginButton
+                onSuccess={(token) => {
+                  // TODO: set auth state, navigate, etc.
+                  console.log('Google token:', token);
+                }}
+                onError={(err) => {
+                  console.error('Google login error:', err);
+                }}
+              />
+            </div>
           </div>
         </form>
 
