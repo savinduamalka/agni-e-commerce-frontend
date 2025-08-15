@@ -4,6 +4,7 @@ import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import Button from "../../components/ui/button";
 import Input from "../../components/ui/input";
 import Card from "../../components/ui/card";
+import GoogleLoginButton from "../../components/ui/google-login";
 import { toast } from 'sonner'
 
 export default function LoginPage() {
@@ -123,9 +124,15 @@ export default function LoginPage() {
           </Button>
 
           <div className="mt-2">
-            <Button type="button" variant="ghost" onClick={() => alert("Social sign-in placeholder")} className="w-full">
-              Continue with Google
-            </Button>
+            <GoogleLoginButton
+              onSuccess={(token) => {
+                // TODO: set auth state, navigate, etc.
+                console.log('Google token:', token);
+              }}
+              onError={(err) => {
+                console.error('Google login error:', err);
+              }}
+            />
           </div>
         </form>
 
