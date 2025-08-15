@@ -6,6 +6,7 @@ import Input from "../../components/ui/input";
 import Card from "../../components/ui/card";
 import GoogleLoginButton from "../../components/ui/google-login";
 import { toast } from 'sonner'
+import logo from "../../assets/logo.png";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -63,6 +64,12 @@ export default function LoginPage() {
     >
       <Card className="w-full max-w-md">
         <header className="mb-6 text-center">
+          <img
+            src={logo}
+            alt="Agni Online Store Logo"
+            className="mx-auto mb-4 h-16 w-auto"
+            style={{ maxWidth: '120px', height: 'auto' }}
+          />
           <h1 className="text-3xl font-semibold">Welcome back</h1>
           <p className="text-sm mt-1 text-slate-500">Sign in to continue to Agni Online Store</p>
         </header>
