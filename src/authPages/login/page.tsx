@@ -48,7 +48,6 @@ export default function LoginPage() {
 
       // success
       toast.success(data?.message || 'Signed in successfully')
-      console.log('Signed in:', data)
       // TODO: navigate to dashboard or set auth state
     } catch (err: any) {
       toast.error(err?.message || 'Something went wrong. Please try again.')
@@ -136,7 +135,6 @@ export default function LoginPage() {
               <GoogleLoginButton
                 onSuccess={(token) => {
                   // TODO: set auth state, navigate, etc.
-                  console.log('Google token:', token);
                 }}
                 onError={(err) => {
                   console.error('Google login error:', err);
@@ -150,7 +148,6 @@ export default function LoginPage() {
               <GoogleLoginButton
                 onSuccess={(token) => {
                   // TODO: set auth state, navigate, etc.
-                  console.log('Google token:', token);
                 }}
                 onError={(err) => {
                   console.error('Google login error:', err);
