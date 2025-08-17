@@ -7,6 +7,7 @@ import { Separator } from "../../components/ui/separator";
 import GoogleLoginButton from "../../components/ui/google-login";
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
+import { uploadFileToBucket } from '../../lib/supabaseClient';
 
 // Route export for framework routing
 export const route = { path: "/signUp", component: SignUpPage };
@@ -15,7 +16,8 @@ export default function SignUpPage() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [password, setPassword] = useState("");
-  const [avatar, setAvatar] = useState("");
+  const [avatar, setAvatar] = useState(""); // stores preview URL
+  const [avatarFile, setAvatarFile] = useState<File | null>(null); // stores actual file
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
@@ -36,18 +38,28 @@ export default function SignUpPage() {
       return;
     }
     setLoading(true);
+    let avatarUrl = "";
     try {
+      // Upload avatar if selected
+      if (avatarFile) {
+        try {
+          avatarUrl = await uploadFileToBucket("avatars", avatarFile);
+        } catch (err: any) {
+          toast.error("Avatar upload failed: " + (err?.message || "Unknown error"));
+          avatarUrl = "";
+        }
+      }
       // call backend signup endpoint
       const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/users`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, firstName, lastName, password, avatar }),
-      })
+        body: JSON.stringify({ email, firstName, lastName, password, avatar: avatarUrl }),
+      });
 
       const data = await (async () => {
-        const txt = await res.text()
-        try { return JSON.parse(txt) } catch { return { message: txt } }
-      })()
+        const txt = await res.text();
+        try { return JSON.parse(txt); } catch { return { message: txt }; }
+      })();
 
       if (!res.ok) {
         const msg = data?.message || data?.error || 'Sign up failed';
@@ -162,6 +174,7 @@ export default function SignUpPage() {
                     onChange={e => {
                       const file = e.target.files?.[0];
                       if (file) {
+                        setAvatarFile(file);
                         const reader = new FileReader();
                         reader.onload = () => {
                           setAvatar(reader.result as string);
