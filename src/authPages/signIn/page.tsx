@@ -1,4 +1,5 @@
 import  { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../../styles/design-tokens.css";
 import {Eye, EyeOff, ArrowLeft } from "lucide-react";
 import { Button } from "../../components/ui/button";
@@ -12,6 +13,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
   const validate = () => {
     if (!email.includes("@")) return "Please enter a valid email.";
@@ -19,7 +21,7 @@ export default function LoginPage() {
     return null;
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const v = validate();
     if (v) {
@@ -41,14 +43,28 @@ export default function LoginPage() {
       })()
 
       if (!res.ok) {
-        const msg = data?.message || data?.error || 'Invalid credentials'
-        throw new Error(msg)
+        // Check for unverified email error
+        const msg = data?.message || data?.error || 'Invalid credentials';
+        if (msg.toLowerCase().includes('verify') || msg.toLowerCase().includes('unverified')) {
+          window.localStorage.setItem('verifyEmail', email);
+          // Send request to backend to send verification code
+          try {
+            await fetch(`${import.meta.env.VITE_BACKEND_URL}/users/request-email-verification`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email }),
+            });
+          } catch {}
+          toast.error('Please verify your email to continue.');
+          navigate('/verify');
+          return;
+        }
+        throw new Error(msg);
       }
 
       // success
       toast.success(data?.message || 'Signed in successfully')
-      // TODO: navigate to dashboard or set auth state
-    } catch (err) {
+    } catch (err: any) {
       toast.error(err?.message || 'Something went wrong. Please try again.')
     } finally {
       setLoading(false)
@@ -115,9 +131,13 @@ export default function LoginPage() {
           <div className="space-y-2 mb-8">
             <h1 className="text-2xl font-semibold text-gray-900">Sign in</h1>
             <p className="text-sm text-gray-600">
-              Don't have an account?{" "}
-              <a href="#" className="font-medium text-gray-900 underline hover:no-underline">
-                Create an Account
+          Don't have an account?{" "}
+          <a 
+            href="#" 
+            className="font-medium text-gray-900 underline hover:no-underline"
+            onClick={() => window.location.href='/signUp'}
+          >
+            Create an Account
               </a>
             </p>
           </div>
