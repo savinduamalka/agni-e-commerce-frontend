@@ -56,6 +56,14 @@ export default function SignUpPage() {
 
       // success
       toast.success(data?.message || 'Account created successfully');
+      // Send request to backend to send verification code
+      try {
+        await fetch(`${import.meta.env.VITE_BACKEND_URL}/users/request-email-verification`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email }),
+        });
+      } catch {}
       // Store email for verify page and navigate
       window.localStorage.setItem('verifyEmail', email);
       navigate('/verify');
