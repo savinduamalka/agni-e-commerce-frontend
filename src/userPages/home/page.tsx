@@ -1,21 +1,25 @@
 import { useState, useEffect } from 'react';
 import { ShoppingCart, Star, Heart, Eye, ArrowRight, TrendingUp, Gift, Truck, Shield, Headphones } from 'lucide-react';
 import Header from '@/components/shared/header';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
+import Footer from '@/components/shared/footer';
 
 // Search Component
 function Search() {
   return (
     <div className="relative max-w-2xl w-full">
-      <input
+      <Input
         type="text"
         placeholder="Search for products, brands and more..."
-        className="w-full px-6 py-4 text-lg border-2 border-gray-200 rounded-full focus:border-blue-500 focus:outline-none shadow-lg"
+        className="w-full px-6 py-4 text-lg rounded-full focus:outline-none shadow-lg"
       />
-      <button className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-blue-600 text-white p-3 rounded-full hover:bg-blue-700 transition-colors">
+      <Button variant="default" className="absolute right-2 top-1/2 transform -translate-y-1/2 p-3 rounded-full transition-colors">
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
         </svg>
-      </button>
+      </Button>
     </div>
   );
 }
@@ -65,10 +69,10 @@ function HeroBanner() {
             <div className="text-white space-y-2 md:space-y-4">
               <h2 className="text-2xl md:text-5xl font-bold">{slide.title}</h2>
               <p className="text-base md:text-xl opacity-90">{slide.subtitle}</p>
-              <button className="bg-white text-gray-800 px-4 py-2 md:px-8 md:py-3 rounded-full font-semibold hover:bg-gray-100 transition-colors flex items-center space-x-2 text-sm md:text-base">
+              <Button variant="secondary" size="lg" className="rounded-full">
                 <span>Shop Now</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
             </div>
             <div className="text-6xl md:text-9xl opacity-20">{slide.image}</div>
           </div>
@@ -120,19 +124,18 @@ function OfferBanners() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
       {offers.map((offer, index) => (
-        <div
-          key={index}
-          className={`${offer.bg} rounded-2xl p-6 text-white transform hover:scale-105 transition-transform cursor-pointer`}
-        >
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="font-bold text-lg md:text-xl mb-1">{offer.title}</h3>
-              <p className="opacity-90 text-xs md:text-sm">{offer.subtitle}</p>
-              <div className="mt-3 text-xl md:text-2xl font-black">{offer.discount}</div>
+        <Card key={index} className={`${offer.bg} text-white transform hover:scale-105 transition-transform cursor-pointer`}>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="text-lg md:text-xl mb-1">{offer.title}</CardTitle>
+                <p className="opacity-90 text-xs md:text-sm">{offer.subtitle}</p>
+                <div className="mt-3 text-xl md:text-2xl font-black">{offer.discount}</div>
+              </div>
+              <div className="text-3xl md:text-4xl opacity-70">{offer.icon}</div>
             </div>
-            <div className="text-3xl md:text-4xl opacity-70">{offer.icon}</div>
-          </div>
-        </div>
+          </CardHeader>
+        </Card>
       ))}
     </div>
   );
@@ -154,32 +157,35 @@ function ProductCard({ product }: { product: Product }) {
   const [isLiked, setIsLiked] = useState(false);
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow group overflow-hidden">
-      <div className="relative overflow-hidden">
-        <div className="bg-gray-100 h-48 flex items-center justify-center text-6xl group-hover:scale-110 transition-transform duration-300">
-          {product.image}
-        </div>
-        <div className="absolute top-3 right-3 flex flex-col space-y-2">
-          <button
-            onClick={() => setIsLiked(!isLiked)}
-            className={`p-2 rounded-full transition-colors ${
-              isLiked ? 'bg-red-500 text-white' : 'bg-white/80 text-gray-600 hover:bg-red-500 hover:text-white'
-            }`}
-          >
-            <Heart className="w-4 h-4" />
-          </button>
-          <button className="p-2 bg-white/80 text-gray-600 rounded-full hover:bg-blue-500 hover:text-white transition-colors">
-            <Eye className="w-4 h-4" />
-          </button>
-        </div>
-        {product.discount && (
-          <div className="absolute top-3 left-3 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
-            -{product.discount}%
+    <Card className="group overflow-hidden">
+      <CardHeader className="p-0">
+        <div className="relative overflow-hidden">
+          <div className="bg-gray-100 h-48 flex items-center justify-center text-6xl group-hover:scale-110 transition-transform duration-300">
+            {product.image}
           </div>
-        )}
-      </div>
-      
-      <div className="p-4">
+          <div className="absolute top-3 right-3 flex flex-col space-y-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setIsLiked(!isLiked)}
+              className={`rounded-full ${
+                isLiked ? 'bg-red-500 text-white hover:bg-red-600' : 'bg-white/80 text-gray-600 hover:bg-red-500 hover:text-white'
+              }`}
+            >
+              <Heart className="w-4 h-4" />
+            </Button>
+            <Button variant="ghost" size="icon" className="bg-white/80 text-gray-600 rounded-full hover:bg-blue-500 hover:text-white transition-colors">
+              <Eye className="w-4 h-4" />
+            </Button>
+          </div>
+          {product.discount && (
+            <div className="absolute top-3 left-3 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+              -{product.discount}%
+            </div>
+          )}
+        </div>
+      </CardHeader>
+      <CardContent className="p-4">
         <h3 className="font-semibold text-gray-800 mb-2">{product.name}</h3>
         <div className="flex items-center space-x-1 mb-2">
           {[...Array(5)].map((_, i) => (
@@ -192,19 +198,19 @@ function ProductCard({ product }: { product: Product }) {
           ))}
           <span className="text-sm text-gray-500 ml-2">({product.reviews})</span>
         </div>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <span className="text-xl font-bold text-gray-800">${product.price}</span>
-            {product.originalPrice && (
-              <span className="text-sm text-gray-500 line-through">${product.originalPrice}</span>
-            )}
-          </div>
-          <button className="bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-700 transition-colors">
-            <ShoppingCart className="w-4 h-4" />
-          </button>
+      </CardContent>
+      <CardFooter className="flex items-center justify-between p-4 pt-0">
+        <div className="flex items-center space-x-2">
+          <span className="text-xl font-bold text-gray-800">${product.price}</span>
+          {product.originalPrice && (
+            <span className="text-sm text-gray-500 line-through">${product.originalPrice}</span>
+          )}
         </div>
-      </div>
-    </div>
+        <Button size="icon">
+          <ShoppingCart className="w-4 h-4" />
+        </Button>
+      </CardFooter>
+    </Card>
   );
 }
 
@@ -218,17 +224,19 @@ function Features() {
   ];
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-6 bg-gray-50 rounded-2xl p-8 mb-12">
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
       {features.map((feature, index) => {
         const Icon = feature.icon;
         return (
-          <div key={index} className="text-center">
-            <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Icon className="w-8 h-8 text-blue-600" />
-            </div>
-            <h3 className="font-semibold text-gray-800 mb-1">{feature.title}</h3>
-            <p className="text-sm text-gray-600">{feature.desc}</p>
-          </div>
+          <Card key={index} className="text-center">
+            <CardContent className="p-6 flex flex-col items-center">
+              <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mb-4">
+                <Icon className="w-8 h-8 text-blue-600" />
+              </div>
+              <h3 className="font-semibold text-gray-800 mb-1">{feature.title}</h3>
+              <p className="text-sm text-gray-600">{feature.desc}</p>
+            </CardContent>
+          </Card>
         );
       })}
     </div>
@@ -283,14 +291,16 @@ export default function HomePage() {
           <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-8 text-center">Shop by Category</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             {categories.map((category, index) => (
-              <div
+              <Card
                 key={index}
-                className="bg-white rounded-2xl p-4 md:p-6 text-center hover:shadow-lg transition-shadow cursor-pointer group"
+                className="p-4 md:p-6 text-center hover:shadow-lg transition-shadow cursor-pointer group"
               >
-                <div className="text-3xl md:text-4xl mb-3 group-hover:scale-110 transition-transform">{category.icon}</div>
-                <h3 className="font-semibold text-gray-800 mb-1 text-sm md:text-base">{category.name}</h3>
-                <p className="text-xs md:text-sm text-gray-500">{category.count}</p>
-              </div>
+                <CardContent className="p-0">
+                  <div className="text-3xl md:text-4xl mb-3 group-hover:scale-110 transition-transform">{category.icon}</div>
+                  <h3 className="font-semibold text-gray-800 mb-1 text-sm md:text-base">{category.name}</h3>
+                  <p className="text-xs md:text-sm text-gray-500">{category.count}</p>
+                </CardContent>
+              </Card>
             ))}
           </div>
         </section>
@@ -305,10 +315,10 @@ export default function HomePage() {
               <TrendingUp className="w-8 h-8 text-green-500 mr-3" />
               Trending Products
             </h2>
-            <button className="text-blue-600 hover:text-blue-700 font-semibold flex items-center">
+            <Button variant="link" className="text-blue-600 hover:text-blue-700 font-semibold">
               View All
               <ArrowRight className="w-4 h-4 ml-1" />
-            </button>
+            </Button>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {trendingProducts.map((product) => (
@@ -317,63 +327,10 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Newsletter Section */}
-        <section className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl p-8 text-center text-white">
-          <h2 className="text-2xl md:text-3xl font-bold mb-4">Stay Updated with Our Latest Offers</h2>
-          <p className="text-lg md:text-xl opacity-90 mb-8">Get exclusive deals and new product updates directly to your inbox</p>
-          <div className="max-w-md mx-auto flex flex-col sm:flex-row">
-            <input
-              type="email"
-              placeholder="Enter your email"
-              className="flex-1 px-6 py-3 rounded-t-full sm:rounded-l-full sm:rounded-r-none text-gray-800 focus:outline-none mb-2 sm:mb-0"
-            />
-            <button className="bg-yellow-400 text-gray-800 px-8 py-3 rounded-b-full sm:rounded-r-full sm:rounded-l-none font-semibold hover:bg-yellow-300 transition-colors">
-              Subscribe
-            </button>
-          </div>
-        </section>
       </main>
 
       {/* Footer */}
-      <footer className="bg-gray-800 text-white py-12 mt-12">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div>
-              <h3 className="text-xl md:text-2xl font-bold text-blue-400 mb-4">Agni Store</h3>
-              <p className="text-gray-300">Your trusted partner for all shopping needs. Quality products, great prices, exceptional service.</p>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">Quick Links</h4>
-              <ul className="space-y-2 text-gray-300">
-                <li><a href="#" className="hover:text-white">About Us</a></li>
-                <li><a href="#" className="hover:text-white">Contact</a></li>
-                <li><a href="#" className="hover:text-white">FAQ</a></li>
-                <li><a href="#" className="hover:text-white">Shipping</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">Categories</h4>
-              <ul className="space-y-2 text-gray-300">
-                <li><a href="#" className="hover:text-white">Electronics</a></li>
-                <li><a href="#" className="hover:text-white">Fashion</a></li>
-                <li><a href="#" className="hover:text-white">Home & Garden</a></li>
-                <li><a href="#" className="hover:text-white">Sports</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">Follow Us</h4>
-              <div className="flex space-x-4">
-                <button className="bg-blue-600 p-2 rounded-full hover:bg-blue-700">📘</button>
-                <button className="bg-pink-600 p-2 rounded-full hover:bg-pink-700">📷</button>
-                <button className="bg-blue-400 p-2 rounded-full hover:bg-blue-500">🐦</button>
-              </div>
-            </div>
-          </div>
-          <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 Agni Store. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
