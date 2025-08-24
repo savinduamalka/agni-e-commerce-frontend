@@ -13,54 +13,67 @@ import {
   SheetContent,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { MainNav } from "@/components/shared/main-nav";
 import { UserNav } from "@/components/shared/user-nav";
+import logo from "@/assets/logo.png";
 
 export default function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 max-w-screen-2xl items-center justify-between">
         <div className="flex items-center space-x-4">
-            {/* Mobile Menu */}
-            <div className="md:hidden">
+          {/* Mobile Menu */}
+          <div className="md:hidden">
             <Sheet>
-                <SheetTrigger asChild>
+              <SheetTrigger asChild>
                 <Button variant="ghost" size="icon">
-                    <Menu className="h-6 w-6" />
+                  <Menu className="h-6 w-6" />
                 </Button>
-                </SheetTrigger>
-                <SheetContent side="left">
+              </SheetTrigger>
+              <SheetContent side="left">
                 <nav className="grid gap-6 text-lg font-medium">
-                    <Link to="/" className="flex items-center gap-2 text-lg font-semibold">
-                        <MainNav />
-                    </Link>
-                    <Link to="/categories" className="hover:text-foreground">
+                  <Link to="/" className="flex items-center gap-2 text-lg font-semibold">
+                    <img src={logo} alt="Agni" className="h-8 w-auto" />
+                    <span className="text-xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
+                      Agni Online Store
+                    </span>
+                  </Link>
+                  <Link to="/categories" className="hover:text-foreground">
                     Categories
-                    </Link>
-                    <Link to="/products" className="text-muted-foreground hover:text-foreground">
+                  </Link>
+                  <Link to="/products" className="text-muted-foreground hover:text-foreground">
                     Products
-                    </Link>
-                    <Link to="/offers" className="text-muted-foreground hover:text-foreground">
+                  </Link>
+                  <Link to="/offers" className="text-muted-foreground hover:text-foreground">
                     Offers
-                    </Link>
-                    <Link to="/contact" className="text-muted-foreground hover:text-foreground">
+                  </Link>
+                  <Link to="/contact" className="text-muted-foreground hover:text-foreground">
                     Contact
-                    </Link>
+                  </Link>
                 </nav>
-                </SheetContent>
+              </SheetContent>
             </Sheet>
-            </div>
+          </div>
 
-            {/* Logo/Brand */}
-            <div className="hidden md:flex">
-                <MainNav />
-            </div>
+          {/* Logo/Brand */}
+          <Link to="/" className="hidden md:flex items-center space-x-2">
+            <img src={logo} alt="Agni" className="h-8 w-auto" />
+            <span className="text-xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
+              Agni Online Store
+            </span>
+          </Link>
         </div>
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex">
           <NavigationMenu>
             <NavigationMenuList className="space-x-4">
+              <NavigationMenuItem>
+                <Link to="/">
+                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                    Home
+                  </NavigationMenuLink>
+                </Link>
+              </NavigationMenuItem>
               <NavigationMenuItem>
                 <Link to="/categories">
                   <NavigationMenuLink className={navigationMenuTriggerStyle()}>

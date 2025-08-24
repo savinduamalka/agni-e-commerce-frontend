@@ -5,8 +5,9 @@ import logo from "@/assets/logo.png";
 
 export function MainNav() {
   return (
-   <div>
-    
-   </div>   
+    <Link to="/" className="flex items-center space-x-2">
+      <img src={logo} alt="Agni" className="h-8 w-auto" />
+      <span className="font-bold hidden md:inline-block">Agni Store</span>
+    </Link>
   );
 }
