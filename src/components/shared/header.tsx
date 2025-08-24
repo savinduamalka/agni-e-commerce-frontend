@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import {
   NavigationMenu,
   NavigationMenuItem,
-  NavigationMenuLink,
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
@@ -33,7 +32,7 @@ export default function Header() {
                 <nav className="grid gap-6 text-lg font-medium">
                   <Link to="/" className="flex items-center gap-2 text-lg font-semibold">
                     <img src={logo} alt="Agni" className="h-8 w-auto" />
-                    <span className="text-xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
+                    <span className="text-xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-red-600 via-orange-500 to-yellow-400">
                       Agni Online Store
                     </span>
                   </Link>
@@ -57,7 +56,7 @@ export default function Header() {
           {/* Logo/Brand */}
           <Link to="/" className="hidden md:flex items-center space-x-2">
             <img src={logo} alt="Agni" className="h-8 w-auto" />
-            <span className="text-xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
+            <span className="text-xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-red-600 via-orange-500 to-yellow-400">
               Agni Online Store
             </span>
           </Link>
@@ -68,38 +67,28 @@ export default function Header() {
           <NavigationMenu>
             <NavigationMenuList className="space-x-4">
               <NavigationMenuItem>
-                <Link to="/">
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                    Home
-                  </NavigationMenuLink>
+                <Link to="/" className={navigationMenuTriggerStyle()}>
+                  Home
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <Link to="/categories">
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                    Categories
-                  </NavigationMenuLink>
+                <Link to="/categories" className={navigationMenuTriggerStyle()}>
+                  Categories
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <Link to="/products">
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                    Products
-                  </NavigationMenuLink>
+                <Link to="/products" className={navigationMenuTriggerStyle()}>
+                  Products
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <Link to="/offers">
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                    Offers
-                  </NavigationMenuLink>
+                <Link to="/offers" className={navigationMenuTriggerStyle()}>
+                  Offers
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <Link to="/contact">
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                    Contact
-                  </NavigationMenuLink>
+                <Link to="/contact" className={navigationMenuTriggerStyle()}>
+                  Contact
                 </Link>
               </NavigationMenuItem>
             </NavigationMenuList>
