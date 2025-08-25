@@ -1,12 +1,13 @@
-import  { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../styles/design-tokens.css";
-import {Eye, EyeOff, ArrowLeft } from "lucide-react";
+import { Eye, EyeOff, ArrowLeft } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import { Separator } from "../../components/ui/separator";
 import GoogleLoginButton from "../../components/ui/google-login";
 import { toast } from 'sonner';
+import { useAuth } from "../../context/AuthContext";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -14,6 +15,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const validate = () => {
     if (!email.includes("@")) return "Please enter a valid email.";
@@ -63,7 +65,14 @@ export default function LoginPage() {
       }
 
       // success
-      toast.success(data?.message || 'Signed in successfully')
+      console.log("Login response from backend:", data);
+      if (data.token) {
+        login(data.token);
+        toast.success(data?.message || 'Signed in successfully');
+        navigate('/');
+      } else {
+        throw new Error(data?.message || 'Login failed: No token received.');
+      }
     } catch (err: any) {
       toast.error(err?.message || 'Something went wrong. Please try again.')
     } finally {
