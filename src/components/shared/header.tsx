@@ -108,9 +108,6 @@ export default function Header() {
                 <HelpCircle className="h-4 w-4" />
               </Button>
             </Link>
-            <Button asChild>
-              <Link to="/signin">Sign In</Link>
-            </Button>
             <UserNav />
           </nav>
         </div>
