@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import "../../styles/design-tokens.css";
 import { Eye, EyeOff, ArrowLeft } from "lucide-react";
 import { Button } from "../../components/ui/button";
@@ -120,20 +120,22 @@ export default function LoginPage() {
         <div className="w-full max-w-sm">
           {/* Elegant Welcome Caption */}
           <div className="flex flex-col items-center mb-6">
-            <span
+            <Link
+              to="/"
               className="text-3xl lg:text-4xl font-extrabold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-red-600 to-yellow-400 drop-shadow-lg text-center"
               style={{ letterSpacing: '0.04em' }}
             >
               AGNI Online Store
-            </span>
-
+            </Link>
           </div>
-          {/* Back button - mobile only */}
-          <Button 
+          {/* Back button */}
+          <Button
             variant="ghost"
-            className="lg:hidden mb-6 p-0 h-auto font-normal text-gray-600 hover:text-gray-900"
+            className="mb-6 p-0 h-auto font-normal text-gray-600 hover:text-gray-900"
+            onClick={() => navigate('/')}
           >
             <ArrowLeft className="w-4 h-4 mr-1" />
+            Back to home
           </Button>
 
           {/* Header */}
