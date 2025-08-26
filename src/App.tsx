@@ -5,6 +5,7 @@ import SignUpPage from './authPages/signUp/page'
 import VerifyEmailPage from './authPages/verify/page'
 import HomePage from './userPages/home/page'
 import CategoriesPage from './userPages/categories/page'
+import ProductsPage from './userPages/products/page'
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/verify" element={<VerifyEmailPage />} />
         <Route path="/" element={<HomePage/>} />
         <Route path="/categories" element={<CategoriesPage />} />
+        <Route path="/products/*" element={<ProductsPage />} />
       </Routes>
   )
 }
