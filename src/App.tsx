@@ -6,6 +6,7 @@ import VerifyEmailPage from './authPages/verify/page'
 import HomePage from './userPages/home/page'
 import CategoriesPage from './userPages/categories/page'
 import ProductsPage from './userPages/products/page'
+import OfferProductsPage from './userPages/offerProducts/page'
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/" element={<HomePage/>} />
         <Route path="/categories" element={<CategoriesPage />} />
         <Route path="/products/*" element={<ProductsPage />} />
+        <Route path="/offers" element={<OfferProductsPage />} />
       </Routes>
   )
 }
