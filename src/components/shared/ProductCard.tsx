@@ -18,7 +18,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
   return (
     <Card className="overflow-hidden transition-shadow duration-300 hover:shadow-lg">
       <CardHeader className="p-0">
-        <Link to={`/product/${product._id}`}>
+        <Link to={`/products/${product.id}`}>
           <img
             src={product.images[0] || '/placeholder-product.svg'}
             alt={product.name}
@@ -28,7 +28,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
       </CardHeader>
       <CardContent className="p-4">
         <CardTitle className="text-lg font-semibold mb-2 truncate">
-          <Link to={`/product/${product._id}`}>{product.name}</Link>
+          <Link to={`/products/${product.id}`}>{product.name}</Link>
         </CardTitle>
         <div className="flex items-center justify-between">
           <p className="text-xl font-bold text-primary">${product.price.toFixed(2)}</p>
@@ -41,7 +41,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
       </CardContent>
       <CardFooter className="p-4 pt-0">
         <Button asChild className="w-full">
-          <Link to={`/product/${product._id}`}>View Details</Link>
+          <Link to={`/products/${product.id}`}>View Details</Link>
         </Button>
       </CardFooter>
     </Card>
