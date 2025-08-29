@@ -7,6 +7,7 @@ import HomePage from './userPages/home/page'
 import CategoriesPage from './userPages/categories/page'
 import ProductsPage from './userPages/products/page'
 import OfferProductsPage from './userPages/offerProducts/page'
+import ProductDetailPage from './userPages/productDetail/page'
 
 function App() {
   return (
@@ -16,7 +17,8 @@ function App() {
         <Route path="/verify" element={<VerifyEmailPage />} />
         <Route path="/" element={<HomePage/>} />
         <Route path="/categories" element={<CategoriesPage />} />
-        <Route path="/products/*" element={<ProductsPage />} />
+        <Route path="/products" element={<ProductsPage />} />
+        <Route path="/products/:id" element={<ProductDetailPage />} />
         <Route path="/offers" element={<OfferProductsPage />} />
       </Routes>
   )
