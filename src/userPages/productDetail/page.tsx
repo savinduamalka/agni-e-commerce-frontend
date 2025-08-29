@@ -8,6 +8,8 @@ import {
   ShoppingCart,
   Star,
   Truck,
+  Share2,
+  Link as LinkIcon,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -30,6 +32,21 @@ import {
 } from '@/components/ui/table';
 import { Separator } from '@/components/ui/separator';
 import ReactImageMagnify from 'react-image-magnify';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import {
+  FacebookShareButton,
+  TwitterShareButton,
+  WhatsappShareButton,
+  EmailShareButton,
+  FacebookIcon,
+  TwitterIcon,
+  WhatsappIcon,
+  EmailIcon,
+} from 'react-share';
 
 interface ProductResponse {
   message: string;
@@ -155,6 +172,14 @@ const ProductDetailPage = () => {
         )
       : 0;
 
+  const productUrl = window.location.href;
+  const shareTitle = `Check out this product: ${product?.name}`;
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(productUrl);
+    toast.success('Link copied to clipboard!');
+  };
+
   return (
     <>
       <Toaster richColors />
@@ -226,12 +251,45 @@ const ProductDetailPage = () => {
             {/* Product Details */}
             <div className="p-6 flex flex-col">
               <CardHeader className="p-0">
-                {product.brand && (
-                  <p className="text-sm text-muted-foreground">
-                    {product.brand}
-                  </p>
-                )}
-                <CardTitle className="text-3xl font-bold tracking-tight">
+                <div className="flex justify-between items-start">
+                  {product.brand && (
+                    <p className="text-sm text-muted-foreground">
+                      {product.brand}
+                    </p>
+                  )}
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button variant="outline" size="icon">
+                        <Share2 className="h-4 w-4" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto">
+                      <div className="flex gap-2">
+                        <FacebookShareButton url={productUrl} title={shareTitle}>
+                          <FacebookIcon size={32} round />
+                        </FacebookShareButton>
+                        <TwitterShareButton url={productUrl} title={shareTitle}>
+                          <TwitterIcon size={32} round />
+                        </TwitterShareButton>
+                        <WhatsappShareButton url={productUrl} title={shareTitle}>
+                          <WhatsappIcon size={32} round />
+                        </WhatsappShareButton>
+                        <EmailShareButton url={productUrl} subject={shareTitle}>
+                          <EmailIcon size={32} round />
+                        </EmailShareButton>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          onClick={handleCopyLink}
+                          className="rounded-full"
+                        >
+                          <LinkIcon className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </PopoverContent>
+                  </Popover>
+                </div>
+                <CardTitle className="text-3xl font-bold tracking-tight mt-2">
                   {product.name}
                 </CardTitle>
                 <div className="flex items-center gap-2 mt-2">
