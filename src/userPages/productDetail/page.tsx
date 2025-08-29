@@ -29,6 +29,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Separator } from '@/components/ui/separator';
+import ReactImageMagnify from 'react-image-magnify';
 
 interface ProductResponse {
   message: string;
@@ -163,12 +164,27 @@ const ProductDetailPage = () => {
           <div className="grid md:grid-cols-2 gap-x-8">
             {/* Image Gallery */}
             <div className="p-4">
-              <div className="relative">
-                <img
-                  src={product.images[currentImageIndex]}
-                  alt={product.name}
-                  className="w-full h-auto object-cover rounded-lg shadow-lg max-h-[500px]"
+              <div className="relative group">
+                <ReactImageMagnify
+                  {...{
+                    smallImage: {
+                      alt: product.name,
+                      isFluidWidth: true,
+                      src: product.images[currentImageIndex],
+                    },
+                    largeImage: {
+                      src: product.images[currentImageIndex],
+                      width: 1200,
+                      height: 1200,
+                    },
+                    enlargedImageContainerDimensions: {
+                      width: '150%',
+                      height: '120%',
+                    },
+                    isHintEnabled: true,
+                  }}
                 />
+
                 {product.images.length > 1 && (
                   <>
                     <Button
