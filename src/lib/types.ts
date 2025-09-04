@@ -1,3 +1,5 @@
+import type { Review } from './reviewTypes';
+
 export interface Ancestor {
   _id: string;
   name: string;
@@ -37,10 +39,11 @@ export interface Product {
   offerPercentage?: number;
   salesCount?: number;
   brand?: string;
-  specifications?: Record<string, any>;
-  features?: string[];
-  createdAt: string;
-  updatedAt: string;
+  features: string[];
+  specifications: Record<string, any>;
+  reviews: Review[];
+  averageRating: number;
+  totalReviews: number;
 }
 
 export interface ProductsResponse {
