@@ -2,35 +2,19 @@
 
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import type { Product } from '@/lib/types';
+import { Button } from '@/components/ui/button';
 import {
   ChevronLeft,
   ChevronRight,
+  Heart,
+  Minus,
+  Plus,
+  Share2,
   ShoppingCart,
   Star,
-  Truck,
-  Share2,
   Link as LinkIcon,
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import Header from '@/components/shared/header';
-import Footer from '@/components/shared/footer';
-import { Toaster, toast } from 'sonner';
-import type { Product } from '@/lib/types';
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableRow,
-} from '@/components/ui/table';
-import { Separator } from '@/components/ui/separator';
 import ReactImageMagnify from 'react-image-magnify';
 import {
   Popover,
@@ -38,32 +22,27 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import {
-  FacebookShareButton,
-  TwitterShareButton,
-  WhatsappShareButton,
   EmailShareButton,
-  FacebookIcon,
-  TwitterIcon,
-  WhatsappIcon,
   EmailIcon,
+  FacebookShareButton,
+  FacebookIcon,
+  WhatsappShareButton,
+  WhatsappIcon,
 } from 'react-share';
+import { Separator } from '@/components/ui/separator';
+import { Skeleton } from '@/components/ui/skeleton';
+import { toast } from 'sonner';
+import ProductReviews from '@/components/shared/ProductReviews';
 
-interface ProductResponse {
-  message: string;
-  product: Product;
-}
-
-const getProductById = async (id: string): Promise<ProductResponse> => {
+const getProductById = async (id: string): Promise<Product> => {
   const response = await fetch(
     `${import.meta.env.VITE_BACKEND_URL}/products/${id}`
   );
   if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(
-      errorData.message || 'An error occurred while fetching the product.'
-    );
+    throw new Error('Product not found');
   }
-  return response.json();
+  const data = await response.json();
+  return data.product;
 };
 
 const ProductDetailPage = () => {
@@ -71,22 +50,22 @@ const ProductDetailPage = () => {
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [selectedImage, setSelectedImage] = useState<string>('');
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
-    if (!id) return;
-
     const fetchProduct = async () => {
-      setLoading(true);
-      setError(null);
+      if (!id) return;
       try {
-        const data = await getProductById(id);
-        setProduct(data.product);
+        setLoading(true);
+        const productData = await getProductById(id);
+        setProduct(productData);
+        if (productData.images.length > 0) {
+          setSelectedImage(productData.images[0]);
+        }
       } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : 'An unknown error occurred';
-        setError(errorMessage);
-        toast.error(errorMessage);
+        setError(err instanceof Error ? err.message : 'An unknown error occurred');
+        toast.error(err instanceof Error ? err.message : 'Failed to fetch product');
       } finally {
         setLoading(false);
       }
@@ -95,315 +74,256 @@ const ProductDetailPage = () => {
     fetchProduct();
   }, [id]);
 
-  const handlePrevImage = () => {
+  const handlePrevious = () => {
     if (!product) return;
-    setCurrentImageIndex(
-      (prevIndex) =>
-        (prevIndex - 1 + product.images.length) % product.images.length
-    );
+    const newIndex = currentIndex === 0 ? product.images.length - 1 : currentIndex - 1;
+    setCurrentIndex(newIndex);
+    setSelectedImage(product.images[newIndex]);
   };
 
-  const handleNextImage = () => {
+  const handleNext = () => {
     if (!product) return;
-    setCurrentImageIndex(
-      (prevIndex) => (prevIndex + 1) % product.images.length
-    );
+    const newIndex = currentIndex === product.images.length - 1 ? 0 : currentIndex + 1;
+    setCurrentIndex(newIndex);
+    setSelectedImage(product.images[newIndex]);
   };
 
   if (loading) {
     return (
-      <>
-        <Header />
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="grid md:grid-cols-2 gap-8">
-            {/* Skeleton for Image */}
-            <div className="animate-pulse">
-              <div className="bg-gray-200 rounded-lg h-96 w-full"></div>
-              <div className="flex justify-center mt-4 space-x-2">
-                <div className="bg-gray-200 h-16 w-16 rounded-md"></div>
-                <div className="bg-gray-200 h-16 w-16 rounded-md"></div>
-                <div className="bg-gray-200 h-16 w-16 rounded-md"></div>
-              </div>
-            </div>
-            {/* Skeleton for Details */}
-            <div className="animate-pulse">
-              <div className="h-8 bg-gray-200 rounded w-3/4 mb-4"></div>
-              <div className="h-6 bg-gray-200 rounded w-1/4 mb-4"></div>
-              <div className="h-12 bg-gray-200 rounded w-1/2 mb-4"></div>
-              <div className="h-20 bg-gray-200 rounded w-full mb-4"></div>
-              <div className="h-10 bg-gray-200 rounded w-1/3"></div>
-            </div>
+      <div className="container mx-auto px-4 py-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="md:col-span-1">
+          <Skeleton className="w-full h-[400px] rounded-lg" />
+          <div className="flex justify-center gap-2 mt-4">
+            <Skeleton className="w-20 h-20 rounded-lg" />
+            <Skeleton className="w-20 h-20 rounded-lg" />
+            <Skeleton className="w-20 h-20 rounded-lg" />
           </div>
         </div>
-        <Footer />
-      </>
+        <div className="md:col-span-1 space-y-6">
+          <Skeleton className="h-8 w-3/4" />
+          <Skeleton className="h-6 w-1/4" />
+          <Skeleton className="h-12 w-full" />
+          <Skeleton className="h-10 w-1/2" />
+        </div>
+      </div>
     );
   }
 
   if (error) {
     return (
-      <>
-        <Header />
-        <div className="container mx-auto text-center py-20">
-          <h2 className="text-2xl font-bold text-red-500">Error</h2>
-          <p>{error}</p>
-        </div>
-        <Footer />
-      </>
+      <div className="container mx-auto px-4 py-8 text-center">
+        <h2 className="text-2xl font-bold text-destructive">Error</h2>
+        <p className="mt-4 text-muted-foreground">{error}</p>
+      </div>
     );
   }
 
   if (!product) {
     return (
-      <>
-        <Header />
-        <div className="container mx-auto text-center py-20">
-          <h2 className="text-2xl font-bold">Product not found</h2>
-        </div>
-        <Footer />
-      </>
+      <div className="container mx-auto px-4 py-8 text-center">
+        <h2 className="text-2xl font-bold">Product Not Found</h2>
+        <p className="mt-4 text-muted-foreground">
+          The product you are looking for does not exist.
+        </p>
+      </div>
     );
   }
 
-  const discountPercentage =
-    product.labeledPrice > product.price
-      ? Math.round(
-          ((product.labeledPrice - product.price) / product.labeledPrice) * 100
-        )
-      : 0;
-
   const productUrl = window.location.href;
-  const shareTitle = `Check out this product: ${product?.name}`;
-
-  const handleCopyLink = () => {
-    navigator.clipboard.writeText(productUrl);
-    toast.success('Link copied to clipboard!');
-  };
 
   return (
-    <>
-      <Toaster richColors />
-      <Header />
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <Card className="overflow-hidden">
-          <div className="grid md:grid-cols-2 gap-x-8">
-            {/* Image Gallery */}
-            <div className="p-4">
-              <div className="relative group">
-                <ReactImageMagnify
-                  {...{
-                    smallImage: {
-                      alt: product.name,
-                      isFluidWidth: true,
-                      src: product.images[currentImageIndex],
-                    },
-                    largeImage: {
-                      src: product.images[currentImageIndex],
-                      width: 1200,
-                      height: 1200,
-                    },
-                    enlargedImageContainerDimensions: {
-                      width: '150%',
-                      height: '120%',
-                    },
-                    isHintEnabled: true,
-                  }}
+    <div className="container mx-auto px-4 py-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {/* Image Gallery */}
+        <div>
+          <div className="relative w-full h-[400px] border rounded-lg overflow-hidden">
+            <ReactImageMagnify
+              {...{
+                smallImage: {
+                  alt: product.name,
+                  isFluidWidth: true,
+                  src: selectedImage,
+                },
+                largeImage: {
+                  src: selectedImage,
+                  width: 1200,
+                  height: 1200,
+                },
+                enlargedImageContainerDimensions: {
+                  width: '150%',
+                  height: '120%',
+                },
+              }}
+            />
+          </div>
+          <div className="flex items-center justify-center gap-2 mt-4">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={handlePrevious}
+              className="h-8 w-8"
+              disabled={product.images.length <= 1}
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            {product.images.map((img, index) => (
+              <button
+                key={index}
+                onClick={() => {
+                  setSelectedImage(img);
+                  setCurrentIndex(index);
+                }}
+                className={`w-20 h-20 rounded-lg overflow-hidden border-2 ${
+                  selectedImage === img ? 'border-primary' : 'border-transparent'
+                }`}
+              >
+                <img
+                  src={img}
+                  alt={`${product.name} thumbnail ${index + 1}`}
+                  className="w-full h-full object-cover"
                 />
+              </button>
+            ))}
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={handleNext}
+              className="h-8 w-8"
+              disabled={product.images.length <= 1}
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
 
-                {product.images.length > 1 && (
-                  <>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full"
-                      onClick={handlePrevImage}
-                    >
-                      <ChevronLeft className="h-6 w-6" />
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full"
-                      onClick={handleNextImage}
-                    >
-                      <ChevronRight className="h-6 w-6" />
-                    </Button>
-                  </>
-                )}
-              </div>
-              <div className="flex justify-center mt-4 space-x-2 overflow-x-auto">
-                {product.images.map((img, index) => (
-                  <img
-                    key={index}
-                    src={img}
-                    alt={`${product.name} thumbnail ${index + 1}`}
-                    className={`h-16 w-16 object-cover rounded-md cursor-pointer border-2 ${
-                      index === currentImageIndex
-                        ? 'border-primary'
-                        : 'border-transparent'
-                    }`}
-                    onClick={() => setCurrentImageIndex(index)}
-                  />
-                ))}
-              </div>
+        {/* Product Info */}
+        <div className="space-y-6">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">{product.name}</h1>
+            <div className="flex items-center mt-2">
+              <a href="#reviews" className="flex items-center">
+                <div className="flex items-center">
+                  {[...Array(5)].map((_, i) => (
+                    <Star
+                      key={i}
+                      className={`h-5 w-5 ${
+                        i < Math.round(product.averageRating)
+                          ? 'text-yellow-400 fill-current'
+                          : 'text-gray-300'
+                      }`}
+                    />
+                  ))}
+                </div>
+                <span className="ml-2 text-sm text-muted-foreground hover:underline">
+                  ({product.totalReviews} reviews)
+                </span>
+              </a>
             </div>
+          </div>
 
-            {/* Product Details */}
-            <div className="p-6 flex flex-col">
-              <CardHeader className="p-0">
-                <div className="flex justify-between items-start">
-                  {product.brand && (
-                    <p className="text-sm text-muted-foreground">
-                      {product.brand}
-                    </p>
-                  )}
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button variant="outline" size="icon">
-                        <Share2 className="h-4 w-4" />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto">
-                      <div className="flex gap-2">
-                        <FacebookShareButton url={productUrl} title={shareTitle}>
-                          <FacebookIcon size={32} round />
-                        </FacebookShareButton>
-                        <TwitterShareButton url={productUrl} title={shareTitle}>
-                          <TwitterIcon size={32} round />
-                        </TwitterShareButton>
-                        <WhatsappShareButton url={productUrl} title={shareTitle}>
-                          <WhatsappIcon size={32} round />
-                        </WhatsappShareButton>
-                        <EmailShareButton url={productUrl} subject={shareTitle}>
-                          <EmailIcon size={32} round />
-                        </EmailShareButton>
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          onClick={handleCopyLink}
-                          className="rounded-full"
-                        >
-                          <LinkIcon className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </PopoverContent>
-                  </Popover>
-                </div>
-                <CardTitle className="text-3xl font-bold tracking-tight mt-2">
-                  {product.name}
-                </CardTitle>
-                <div className="flex items-center gap-2 mt-2">
-                  <div className="flex items-center gap-1">
-                    {[...Array(5)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className="h-5 w-5 text-yellow-400 fill-current"
-                      />
-                    ))}
-                  </div>
-                  <span className="text-sm text-muted-foreground">
-                    (5.0)
-                  </span>
-                </div>
-              </CardHeader>
+          <p className="text-3xl font-bold">
+            ${product.price.toFixed(2)}
+            {product.isOffer && product.labeledPrice > product.price && (
+              <span className="text-lg text-muted-foreground line-through ml-2">
+                ${product.labeledPrice.toFixed(2)}
+              </span>
+            )}
+          </p>
 
-              <CardContent className="p-0 mt-4 flex-grow">
-                <div className="flex items-baseline gap-2">
-                  <span className="text-3xl font-bold text-primary">
-                    ${product.price.toFixed(2)}
-                  </span>
-                  {discountPercentage > 0 && (
-                    <span className="text-lg text-muted-foreground line-through">
-                      ${product.labeledPrice.toFixed(2)}
-                    </span>
-                  )}
-                </div>
-                {discountPercentage > 0 && (
-                  <Badge variant="destructive" className="mt-2">
-                    {discountPercentage}% OFF
-                  </Badge>
-                )}
+          <p className="text-muted-foreground">{product.description}</p>
 
-                <p className="text-muted-foreground mt-4">
-                  {product.description}
-                </p>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <Button variant="outline" size="icon">
+                <Minus className="h-4 w-4" />
+              </Button>
+              <span className="text-lg font-semibold">1</span>
+              <Button variant="outline" size="icon">
+                <Plus className="h-4 w-4" />
+              </Button>
+            </div>
+            <Button size="lg" className="flex-1">
+              <ShoppingCart className="mr-2 h-5 w-5" /> Add to Cart
+            </Button>
+            <Button variant="outline" size="icon">
+              <Heart className="h-5 w-5" />
+            </Button>
+          </div>
 
-                <div className="mt-6">
-                  <h4 className="font-semibold">Availability</h4>
-                  <p
-                    className={`text-sm ${
-                      product.stock > 0 ? 'text-green-600' : 'text-red-600'
-                    }`}
-                  >
-                    {product.stock > 0
-                      ? `${product.stock} items in stock`
-                      : 'Out of Stock'}
-                  </p>
-                </div>
-
-                <div className="mt-6 flex items-center gap-4 text-sm text-muted-foreground">
-                  <Truck className="h-5 w-5" />
-                  <span>Free standard shipping</span>
-                </div>
-              </CardContent>
-
-              <CardFooter className="p-0 mt-6">
-                <Button
-                  size="lg"
-                  className="w-full"
-                  disabled={product.stock === 0}
-                >
-                  <ShoppingCart className="mr-2 h-5 w-5" />
-                  Add to Cart
+          <div className="flex items-center gap-4">
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline">
+                  <Share2 className="mr-2 h-4 w-4" /> Share
                 </Button>
-              </CardFooter>
-            </div>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto">
+                <div className="flex gap-2 p-2">
+                  <FacebookShareButton url={productUrl}>
+                    <FacebookIcon size={32} round />
+                  </FacebookShareButton>
+                  <EmailShareButton url={productUrl}>
+                    <EmailIcon size={32} round />
+                  </EmailShareButton>
+                  <WhatsappShareButton url={productUrl}>
+                    <WhatsappIcon size={32} round />
+                  </WhatsappShareButton>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => {
+                      navigator.clipboard.writeText(productUrl);
+                      toast.success('Link copied to clipboard!');
+                    }}
+                  >
+                    <LinkIcon className="h-5 w-5" />
+                  </Button>
+                </div>
+              </PopoverContent>
+            </Popover>
           </div>
 
-          {/* Specifications and Features */}
-          <div className="px-6 py-8">
-            <Separator />
-            <div className="grid md:grid-cols-2 gap-8 mt-8">
-              <div>
-                <h3 className="text-xl font-bold mb-4">Specifications</h3>
-                {product.specifications &&
-                Object.keys(product.specifications).length > 0 ? (
-                  <Table>
-                    <TableBody>
-                      {Object.entries(product.specifications).map(
-                        ([key, value]) => (
-                          <TableRow key={key}>
-                            <TableCell className="font-medium capitalize">
-                              {key}
-                            </TableCell>
-                            <TableCell>{String(value)}</TableCell>
-                          </TableRow>
-                        )
-                      )}
-                    </TableBody>
-                  </Table>
-                ) : (
-                  <p>No specifications available.</p>
-                )}
-              </div>
-              <div>
-                <h3 className="text-xl font-bold mb-4">Features</h3>
-                {product.features && product.features.length > 0 ? (
-                  <ul className="list-disc list-inside space-y-2">
-                    {product.features.map((feature, index) => (
-                      <li key={index}>{feature}</li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p>No features listed.</p>
-                )}
-              </div>
-            </div>
+          <Separator />
+
+          <div>
+            <p>
+              <span className="font-semibold">Brand:</span> {product.brand}
+            </p>
+            <p>
+              <span className="font-semibold">Category:</span>{' '}
+              {product.category.name}
+            </p>
+            <p
+              className={`font-semibold ${
+                product.stock > 0 ? 'text-green-600' : 'text-red-600'
+              }`}
+            >
+              {product.stock > 0 ? 'In Stock' : 'Out of Stock'}
+            </p>
           </div>
-        </Card>
+        </div>
       </div>
-      <Footer />
-    </>
+
+      {/* Product Details Tabs / Review Section */}
+      <div id="reviews" className="mt-12">
+        <ProductReviews
+          productId={product.id}
+          initialReviews={product.reviews}
+          initialPagination={{
+            currentPage: 1,
+            totalPages: Math.ceil(product.totalReviews / 5),
+            totalReviews: product.totalReviews,
+            hasNext: product.reviews.length < product.totalReviews,
+            hasPrev: false,
+            pageSize: 5,
+            sortBy: 'createdAt',
+            sortOrder: 'desc',
+          }}
+          averageRating={product.averageRating}
+          totalReviews={product.totalReviews}
+        />
+      </div>
+    </div>
   );
 };
 
