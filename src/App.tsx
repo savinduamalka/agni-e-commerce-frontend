@@ -16,7 +16,6 @@ function App() {
   return (
     <>
       <ScrollToTop />
-      <Header />
       <main className="flex-grow">
         <Routes>
           <Route path="/signin" element={<LoginPage />} />
@@ -29,7 +28,6 @@ function App() {
           <Route path="/offers" element={<OfferProductsPage />} />
         </Routes>
       </main>
-      <Footer />
     </>
   )
 }
