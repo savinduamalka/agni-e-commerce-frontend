@@ -35,7 +35,7 @@ export const Pagination = ({ currentPage, totalPages, onPageChange }: Pagination
 
     if (startPage > 1) {
       pageNumbers.push(
-        <PaginationItem key={1}>
+        <PaginationItem key={1} className="cursor-pointer">
           <PaginationLink onClick={() => onPageChange(1)}>1</PaginationLink>
         </PaginationItem>
       );
@@ -46,7 +46,7 @@ export const Pagination = ({ currentPage, totalPages, onPageChange }: Pagination
 
     for (let i = startPage; i <= endPage; i++) {
       pageNumbers.push(
-        <PaginationItem key={i}>
+        <PaginationItem key={i} className="cursor-pointer">
           <PaginationLink
             isActive={i === currentPage}
             onClick={() => onPageChange(i)}
@@ -62,7 +62,7 @@ export const Pagination = ({ currentPage, totalPages, onPageChange }: Pagination
         pageNumbers.push(<PaginationEllipsis key="end-ellipsis" />);
       }
       pageNumbers.push(
-        <PaginationItem key={totalPages}>
+        <PaginationItem key={totalPages} className="cursor-pointer">
           <PaginationLink onClick={() => onPageChange(totalPages)}>{totalPages}</PaginationLink>
         </PaginationItem>
       );
@@ -78,11 +78,11 @@ export const Pagination = ({ currentPage, totalPages, onPageChange }: Pagination
   return (
     <ShadcnPagination>
       <PaginationContent>
-        <PaginationItem>
+        <PaginationItem className="cursor-pointer">
           <PaginationPrevious onClick={handlePrevious} />
         </PaginationItem>
         {renderPageNumbers()}
-        <PaginationItem>
+        <PaginationItem className="cursor-pointer">
           <PaginationNext onClick={handleNext} />
         </PaginationItem>
       </PaginationContent>
