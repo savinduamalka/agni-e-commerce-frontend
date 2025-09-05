@@ -131,7 +131,7 @@ export default function LoginPage() {
           {/* Back button */}
           <Button
             variant="ghost"
-            className="mb-6 p-0 h-auto font-normal text-gray-600 hover:text-gray-900"
+            className="mb-6 p-0 h-auto font-normal text-gray-600 hover:text-gray-900 cursor-pointer"
             onClick={() => navigate('/')}
           >
             <ArrowLeft className="w-4 h-4 mr-1" />
