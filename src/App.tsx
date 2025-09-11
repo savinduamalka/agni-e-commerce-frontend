@@ -8,9 +8,8 @@ import CategoriesPage from './userPages/categories/page'
 import ProductsPage from './userPages/products/page'
 import OfferProductsPage from './userPages/offerProducts/page'
 import ProductDetailPage from './userPages/productDetail/page'
+import CartPage from './userPages/cart/page'
 import ScrollToTop from './components/shared/ScrollToTop'
-import Header from './components/shared/header'
-import Footer from './components/shared/footer'
 
 function App() {
   return (
@@ -26,6 +25,7 @@ function App() {
           <Route path="/products" element={<ProductsPage />} />
           <Route path="/products/:id" element={<ProductDetailPage />} />
           <Route path="/offers" element={<OfferProductsPage />} />
+          <Route path="/cart" element={<CartPage />} />
         </Routes>
       </main>
     </>

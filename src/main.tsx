@@ -5,6 +5,7 @@ import App from './App.tsx'
 import { Toaster } from 'sonner'
 import { GoogleOAuthProvider } from '@react-oauth/google'
 import { AuthProvider } from './context/AuthContext.tsx'
+import { CartProvider } from './context/CartContext.tsx'
 import { BrowserRouter } from 'react-router-dom'
 
 createRoot(document.getElementById('root')!).render(
@@ -12,8 +13,10 @@ createRoot(document.getElementById('root')!).render(
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
       <BrowserRouter>
         <AuthProvider>
-          <App />
-          <Toaster />
+          <CartProvider>
+            <App />
+            <Toaster />
+          </CartProvider>
         </AuthProvider>
       </BrowserRouter>
     </GoogleOAuthProvider>
