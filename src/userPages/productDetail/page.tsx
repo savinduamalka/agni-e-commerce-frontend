@@ -294,11 +294,12 @@ const ProductDetailPage = () => {
               </div>
               <Button
                 size="lg"
-                className="flex-1"
                 onClick={handleAddToCart}
-                disabled={!product || product.stock === 0}
+                disabled={product.stock === 0}
+                className="hover:bg-primary/90"
               >
-                <ShoppingCart className="mr-2 h-5 w-5" /> Add to Cart
+                <ShoppingCart className="mr-2 h-5 w-5" />
+                {product.stock > 0 ? 'Add to Cart' : 'Out of Stock'}
               </Button>
               <Button variant="outline" size="icon">
                 <Heart className="h-5 w-5" />
