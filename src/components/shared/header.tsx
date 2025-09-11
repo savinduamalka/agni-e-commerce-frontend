@@ -1,4 +1,4 @@
-import { ShoppingCart, HelpCircle, Menu } from 'lucide-react';
+import { HelpCircle, Menu } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import {
@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/sheet";
 import { UserNav } from "@/components/shared/user-nav";
 import logo from "@/assets/logo.png";
+import CartIcon from "../cart/CartIcon";
 
 export default function Header() {
   return (
@@ -98,17 +99,13 @@ export default function Header() {
         {/* User Actions */}
         <div className="flex items-center space-x-4">
           <nav className="flex items-center space-x-4">
-            <Link to="/cart">
-              <Button variant="ghost" size="icon">
-                <ShoppingCart className="h-4 w-4" />
-              </Button>
-            </Link>
             <Link to="/help">
               <Button variant="ghost" size="icon">
                 <HelpCircle className="h-4 w-4" />
               </Button>
             </Link>
             <UserNav />
+            <CartIcon />
           </nav>
         </div>
       </div>
