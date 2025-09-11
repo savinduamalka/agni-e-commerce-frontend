@@ -35,6 +35,7 @@ import { toast } from 'sonner';
 import ProductReviews from '@/components/shared/ProductReviews';
 import Header from '@/components/shared/header';
 import Footer from '@/components/shared/footer';
+import { useCart } from '../../context/CartContext';
 
 const getProductById = async (id: string): Promise<Product> => {
   const response = await fetch(
@@ -54,6 +55,8 @@ const ProductDetailPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [selectedImage, setSelectedImage] = useState<string>('');
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [quantity, setQuantity] = useState(1);
+  const { addToCart } = useCart();
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -88,6 +91,27 @@ const ProductDetailPage = () => {
     const newIndex = currentIndex === product.images.length - 1 ? 0 : currentIndex + 1;
     setCurrentIndex(newIndex);
     setSelectedImage(product.images[newIndex]);
+  };
+
+  const handleAddToCart = async () => {
+    if (product) {
+      const success = await addToCart(product.id, quantity);
+      if (success) {
+        toast.success(`${quantity} x ${product.name} added to cart!`);
+      }
+    }
+  };
+
+  const incrementQuantity = () => {
+    if (product && quantity < product.stock) {
+      setQuantity((prev) => prev + 1);
+    }
+  };
+
+  const decrementQuantity = () => {
+    if (quantity > 1) {
+      setQuantity((prev) => prev - 1);
+    }
   };
 
   if (loading) {
@@ -250,15 +274,30 @@ const ProductDetailPage = () => {
 
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
-                <Button variant="outline" size="icon">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={decrementQuantity}
+                  disabled={quantity <= 1}
+                >
                   <Minus className="h-4 w-4" />
                 </Button>
-                <span className="text-lg font-semibold">1</span>
-                <Button variant="outline" size="icon">
+                <span className="text-lg font-semibold">{quantity}</span>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={incrementQuantity}
+                  disabled={!product || quantity >= product.stock}
+                >
                   <Plus className="h-4 w-4" />
                 </Button>
               </div>
-              <Button size="lg" className="flex-1">
+              <Button
+                size="lg"
+                className="flex-1"
+                onClick={handleAddToCart}
+                disabled={!product || product.stock === 0}
+              >
                 <ShoppingCart className="mr-2 h-5 w-5" /> Add to Cart
               </Button>
               <Button variant="outline" size="icon">
