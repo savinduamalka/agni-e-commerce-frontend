@@ -143,22 +143,22 @@ const OfferProductsPage = () => {
             Offer Zone
           </h1>
           <div className="flex items-center gap-2">
-            <Button
-              variant={view === 'grid' ? 'secondary' : 'ghost'}
-              size="icon"
-              onClick={() => setView('grid')}
-              className="hidden sm:flex"
-            >
-              <LayoutGrid className="h-5 w-5" />
-            </Button>
-            <Button
-              variant={view === 'list' ? 'secondary' : 'ghost'}
-              size="icon"
-              onClick={() => setView('list')}
-              className="hidden sm:flex"
-            >
-              <List className="h-5 w-5" />
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                variant={view === 'grid' ? 'secondary' : 'ghost'}
+                size="icon"
+                onClick={() => setView('grid')}
+              >
+                <LayoutGrid className="h-5 w-5" />
+              </Button>
+              <Button
+                variant={view === 'list' ? 'secondary' : 'ghost'}
+                size="icon"
+                onClick={() => setView('list')}
+              >
+                <List className="h-5 w-5" />
+              </Button>
+            </div>
             <Sheet>
               <SheetTrigger asChild>
                 <Button variant="outline" className="lg:hidden">
