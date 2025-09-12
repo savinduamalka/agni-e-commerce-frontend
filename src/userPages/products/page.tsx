@@ -18,7 +18,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
-import { Filter } from 'lucide-react';
+import { Filter, LayoutGrid, List } from 'lucide-react';
 
 interface GetActiveProductsParams {
   page?: number;
@@ -69,6 +69,7 @@ const ProductsPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [view, setView] = useState<'grid' | 'list'>('grid');
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -131,20 +132,38 @@ const ProductsPage = () => {
           <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
             Products
           </h1>
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button variant="outline" className="lg:hidden">
-                <Filter className="mr-2 h-4 w-4" />
-                Filters
-              </Button>
-            </SheetTrigger>
-            <SheetContent>
-              <SheetHeader>
-                <SheetTitle>Filters</SheetTitle>
-              </SheetHeader>
-              <ProductFilters />
-            </SheetContent>
-          </Sheet>
+          <div className="flex items-center gap-2">
+            <Button
+              variant={view === 'grid' ? 'secondary' : 'ghost'}
+              size="icon"
+              onClick={() => setView('grid')}
+              className="hidden sm:flex"
+            >
+              <LayoutGrid className="h-5 w-5" />
+            </Button>
+            <Button
+              variant={view === 'list' ? 'secondary' : 'ghost'}
+              size="icon"
+              onClick={() => setView('list')}
+              className="hidden sm:flex"
+            >
+              <List className="h-5 w-5" />
+            </Button>
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="outline" className="lg:hidden">
+                  <Filter className="mr-2 h-4 w-4" />
+                  Filters
+                </Button>
+              </SheetTrigger>
+              <SheetContent>
+                <SheetHeader>
+                  <SheetTitle>Filters</SheetTitle>
+                </SheetHeader>
+                <ProductFilters />
+              </SheetContent>
+            </Sheet>
+          </div>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           <div className="hidden lg:block lg:col-span-1">
@@ -161,7 +180,7 @@ const ProductsPage = () => {
               <div className="text-center text-red-500">{error}</div>
             ) : products.length > 0 ? (
               <>
-                <ProductGrid products={products} />
+                <ProductGrid products={products} view={view} />
                 <div className="mt-8">
                   <Pagination
                     currentPage={currentPage}
