@@ -160,6 +160,25 @@ const ProductsPage = () => {
                 <SheetHeader>
                   <SheetTitle>Filters</SheetTitle>
                 </SheetHeader>
+                <div className="p-4">
+                  <h3 className="mb-4 text-sm font-medium">View As</h3>
+                  <div className="grid grid-cols-2 gap-2">
+                    <Button
+                      variant={view === 'grid' ? 'secondary' : 'outline'}
+                      onClick={() => setView('grid')}
+                    >
+                      <LayoutGrid className="mr-2 h-4 w-4" />
+                      Grid
+                    </Button>
+                    <Button
+                      variant={view === 'list' ? 'secondary' : 'outline'}
+                      onClick={() => setView('list')}
+                    >
+                      <List className="mr-2 h-4 w-4" />
+                      List
+                    </Button>
+                  </div>
+                </div>
                 <ProductFilters />
               </SheetContent>
             </Sheet>
@@ -171,10 +190,20 @@ const ProductsPage = () => {
           </div>
           <div className="lg:col-span-3">
             {loading ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                {Array.from({ length: 12 }).map((_, i) => (
-                  <ProductCardSkeleton key={i} />
-                ))}
+              <div
+                className={`grid gap-6 ${
+                  view === 'grid'
+                    ? 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3'
+                    : 'grid-cols-1'
+                }`}
+              >
+                {Array.from({ length: 12 }).map((_, i) =>
+                  view === 'grid' ? (
+                    <ProductCardSkeleton key={i} />
+                  ) : (
+                    <div key={i} className="w-full h-28 rounded-lg bg-muted" />
+                  )
+                )}
               </div>
             ) : error ? (
               <div className="text-center text-red-500">{error}</div>
