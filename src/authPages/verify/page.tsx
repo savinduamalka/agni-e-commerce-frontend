@@ -1,5 +1,5 @@
-
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import { Separator } from "../../components/ui/separator";
@@ -12,6 +12,7 @@ export default function VerifyEmailPage({ email }: { email?: string }) {
   const [resending, setResending] = useState(false);
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const userEmail = email || (typeof window !== "undefined" ? window.localStorage.getItem("verifyEmail") : "");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -32,6 +33,7 @@ export default function VerifyEmailPage({ email }: { email?: string }) {
       if (!res.ok) throw new Error(data?.message || "Verification failed");
       toast.success(data?.message || "Email verified successfully!");
       // TODO: navigate to dashboard or sign in, optionally store token: data.token
+      navigate("/signIn");
     } catch (err: any) {
       toast.error(err?.message || "Invalid code. Please try again.");
     } finally {
