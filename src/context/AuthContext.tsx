@@ -28,10 +28,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (token) {
       try {
         const decodedToken: any = jwtDecode(token);
+        console.log("Decoded token on page load:", decodedToken);
+        const name = decodedToken.name || `${decodedToken.firstName} ${decodedToken.lastName}`;
         const userData = {
           email: decodedToken.email,
-          name: `${decodedToken.firstName} ${decodedToken.lastName}`,
-          avatarUrl: decodedToken.avatar,
+          name: name,
+          avatarUrl: decodedToken.avatar || decodedToken.picture,
           role: decodedToken.role,
         };
         setUser(userData);
@@ -48,10 +50,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const login = (token: string) => {
     try {
       const decodedToken: any = jwtDecode(token);
+      console.log("Decoded token on login:", decodedToken);
+      const name = decodedToken.name || `${decodedToken.firstName} ${decodedToken.lastName}`;
       const userData = {
         email: decodedToken.email,
-        name: `${decodedToken.firstName} ${decodedToken.lastName}`,
-        avatarUrl: decodedToken.avatar,
+        name: name,
+        avatarUrl: decodedToken.avatar || decodedToken.picture,
         role: decodedToken.role,
       };
       setUser(userData);
