@@ -7,6 +7,9 @@ import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import Footer from '@/components/shared/footer';
 import type { Category } from '@/lib/types';
+import banner1 from '@/assets/banner1.png';
+import banner2 from '@/assets/banner2.png';
+import banner3 from '@/assets/banner3.png';
 
 // Search Component
 function Search() {
@@ -41,22 +44,19 @@ function HeroBanner() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const slides = [
     {
-      title: "Summer Sale is Here!",
-      subtitle: "Up to 70% off on all electronics",
-      bg: "bg-gradient-to-r from-orange-400 to-pink-500",
-      image: "📱"
+      title: "AGNI BOOKSHOP AND COMMUNICATION",
+      subtitle: "WILL OPEN AT NEW LOCATION SOON",
+      imageUrl: banner1,
     },
     {
-      title: "Fashion Week Special",
-      subtitle: "New arrivals with 50% discount",
-      bg: "bg-gradient-to-r from-purple-500 to-indigo-600",
-      image: "👗"
+      title: "SHOP WITH AGNI ONLINE STORE",
+      subtitle: "Discover the latest in tech and accessories",
+      imageUrl: banner2,
     },
     {
-      title: "Home & Garden Sale",
-      subtitle: "Transform your space with 40% off",
-      bg: "bg-gradient-to-r from-green-400 to-blue-500",
-      image: "🏡"
+      title: "AGNI ONLINE STORE",
+      subtitle: "GRAND OPENING",
+      imageUrl: banner3,
     }
   ];
 
@@ -72,21 +72,23 @@ function HeroBanner() {
       {slides.map((slide, index) => (
         <div
           key={index}
-          className={`absolute inset-0 ${slide.bg} transition-transform duration-500 ${
+          className={`absolute inset-0 transition-transform duration-500 ${
             index === currentSlide ? 'translate-x-0' : 
             index < currentSlide ? '-translate-x-full' : 'translate-x-full'
           }`}
         >
-          <div className="flex items-center justify-between h-full px-6 md:px-12">
-            <div className="text-white space-y-2 md:space-y-4">
+          <img src={slide.imageUrl} alt={slide.title} className="w-full h-full object-cover" />
+          <div className="absolute inset-0 flex items-center justify-center text-center h-full px-6 md:px-12">
+            <div className="text-white space-y-2 md:space-y-4 bg-black bg-opacity-50 p-6 rounded-lg">
               <h2 className="text-2xl md:text-5xl font-bold">{slide.title}</h2>
               <p className="text-base md:text-xl opacity-90">{slide.subtitle}</p>
-              <Button variant="secondary" size="lg" className="rounded-full">
-                <span>Shop Now</span>
-                <ArrowRight className="w-4 h-4 ml-2" />
-              </Button>
+              <Link to="/products">
+                <Button variant="secondary" size="lg" className="rounded-full">
+                  <span>Shop Now</span>
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+              </Link>
             </div>
-            <div className="text-6xl md:text-9xl opacity-20">{slide.image}</div>
           </div>
         </div>
       ))}
