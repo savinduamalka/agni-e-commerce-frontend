@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import Footer from '@/components/shared/footer';
+import type { Category } from '@/lib/types';
 
 // Search Component
 function Search() {
@@ -243,27 +244,77 @@ function Features() {
   );
 }
 
+function ShopByCategory() {
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/categories`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch categories');
+        }
+        const data = await response.json();
+        const categoriesData = data.data.categories;
+        if (Array.isArray(categoriesData)) {
+          setCategories(categoriesData);
+        } else {
+          throw new Error("Unexpected data format from API");
+        }
+      } catch (err: any) {
+        setError(err.message);
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  return (
+    <div className="mb-12">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-3xl font-bold">Shop by Category</h2>
+        <Button variant="outline" className="rounded-full">
+          <span>View All</span>
+          <ArrowRight className="w-4 h-4 ml-2" />
+        </Button>
+      </div>
+      {loading ? (
+        <div className="text-center">Loading categories...</div>
+      ) : error ? (
+        <div className="text-center text-red-500">Error: {error}</div>
+      ) : (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {categories.slice(0, 8).map((category) => (
+            <Card key={category._id} className="flex flex-col items-center justify-center p-4 aspect-square text-center hover:bg-gray-50 transition-colors cursor-pointer">
+              <img src={category.image} alt={category.name} className="w-16 h-16 object-contain mb-2" />
+              <h3 className="font-semibold text-gray-700">{category.name}</h3>
+            </Card>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Featured Products Component
+const featuredProducts: Product[] = [
+  { id: 1, name: "Wireless Headphones", price: 79.99, originalPrice: 99.99, rating: 4, reviews: 124, image: "🎧", discount: 20 },
+  { id: 2, name: "Smart Watch", price: 199.99, originalPrice: 299.99, rating: 5, reviews: 89, image: "⌚", discount: 33 },
+  { id: 3, name: "Laptop Backpack", price: 49.99, rating: 4, reviews: 67, image: "🎒" },
+  { id: 4, name: "Bluetooth Speaker", price: 39.99, originalPrice: 59.99, rating: 4, reviews: 156, image: "🔊", discount: 33 },
+  { id: 5, name: "Fitness Tracker", price: 89.99, rating: 5, reviews: 203, image: "📱" },
+  { id: 6, name: "Gaming Mouse", price: 29.99, originalPrice: 49.99, rating: 4, reviews: 78, image: "🖱️", discount: 40 },
+  { id: 7, name: "USB-C Hub", price: 34.99, rating: 4, reviews: 92, image: "🔌" },
+  { id: 8, name: "Desk Organizer", price: 24.99, originalPrice: 34.99, rating: 5, reviews: 45, image: "📚", discount: 29 }
+];
+
 export default function HomePage() {
-  const trendingProducts = [
-    { id: 1, name: "Wireless Headphones", price: 79.99, originalPrice: 99.99, rating: 4, reviews: 124, image: "🎧", discount: 20 },
-    { id: 2, name: "Smart Watch", price: 199.99, originalPrice: 299.99, rating: 5, reviews: 89, image: "⌚", discount: 33 },
-    { id: 3, name: "Laptop Backpack", price: 49.99, rating: 4, reviews: 67, image: "🎒" },
-    { id: 4, name: "Bluetooth Speaker", price: 39.99, originalPrice: 59.99, rating: 4, reviews: 156, image: "🔊", discount: 33 },
-    { id: 5, name: "Fitness Tracker", price: 89.99, rating: 5, reviews: 203, image: "📱" },
-    { id: 6, name: "Gaming Mouse", price: 29.99, originalPrice: 49.99, rating: 4, reviews: 78, image: "🖱️", discount: 40 },
-    { id: 7, name: "USB-C Hub", price: 34.99, rating: 4, reviews: 92, image: "🔌" },
-    { id: 8, name: "Desk Organizer", price: 24.99, originalPrice: 34.99, rating: 5, reviews: 45, image: "📚", discount: 29 }
-  ];
-
-  const categories = [
-    { name: "Electronics", icon: "📱", count: "2.5k+ items" },
-    { name: "Fashion", icon: "👕", count: "1.8k+ items" },
-    { name: "Home & Garden", icon: "🏠", count: "950+ items" },
-    { name: "Sports", icon: "⚽", count: "650+ items" },
-    { name: "Books", icon: "📚", count: "1.2k+ items" },
-    { name: "Beauty", icon: "💄", count: "800+ items" }
-  ];
-
   return (
     <div className="bg-gray-50 min-h-screen">
       <Header />
@@ -287,23 +338,7 @@ export default function HomePage() {
         <OfferBanners />
 
         {/* Categories Section */}
-        <section className="mb-12">
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-8 text-center">Shop by Category</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {categories.map((category, index) => (
-              <Card
-                key={index}
-                className="p-4 md:p-6 text-center hover:shadow-lg transition-shadow cursor-pointer group"
-              >
-                <CardContent className="p-0">
-                  <div className="text-3xl md:text-4xl mb-3 group-hover:scale-110 transition-transform">{category.icon}</div>
-                  <h3 className="font-semibold text-gray-800 mb-1 text-sm md:text-base">{category.name}</h3>
-                  <p className="text-xs md:text-sm text-gray-500">{category.count}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </section>
+        <ShopByCategory />
 
         {/* Features */}
         <Features />
@@ -321,7 +356,7 @@ export default function HomePage() {
             </Button>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {trendingProducts.map((product) => (
+            {featuredProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>
