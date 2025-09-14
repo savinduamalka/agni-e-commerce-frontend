@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { ShoppingCart, Star, Heart, Eye, ArrowRight, TrendingUp, Gift, Truck, Shield, Headphones } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { ShoppingCart, Star, Heart, Eye, ArrowRight, TrendingUp, Gift, Truck, Shield, Headphones, Search as SearchIcon } from 'lucide-react';
 import Header from '@/components/shared/header';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -10,19 +10,29 @@ import type { Category } from '@/lib/types';
 
 // Search Component
 function Search() {
+  const [query, setQuery] = useState('');
+  const navigate = useNavigate();
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (query.trim()) {
+      navigate(`/products?search=${query.trim()}`);
+    }
+  };
+
   return (
-    <div className="relative max-w-2xl w-full">
+    <form onSubmit={handleSearch} className="relative w-full max-w-3xl mx-auto">
       <Input
         type="text"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
         placeholder="Search for products, brands and more..."
-        className="w-full px-6 py-4 text-lg rounded-full focus:outline-none shadow-lg"
+        className="w-full pl-6 pr-16 py-6 text-xl rounded-full focus:outline-none shadow-2xl transition-shadow focus:shadow-blue-200 border-2 border-transparent focus:border-blue-500"
       />
-      <Button variant="default" className="absolute right-2 top-1/2 transform -translate-y-1/2 p-3 rounded-full transition-colors">
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-        </svg>
+      <Button type="submit" variant="default" className="absolute right-2.5 top-1/2 transform -translate-y-1/2 h-14 w-14 p-3 rounded-full transition-transform hover:scale-105 bg-blue-600 hover:bg-blue-700">
+        <SearchIcon className="w-6 h-6 text-white" />
       </Button>
-    </div>
+    </form>
   );
 }
 
