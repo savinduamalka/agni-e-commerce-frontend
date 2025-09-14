@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ShoppingCart, Star, Heart, Eye, ArrowRight, TrendingUp, Gift, Truck, Shield, Headphones, Search as SearchIcon } from 'lucide-react';
+import { ShoppingCart, Star, Heart, Eye, ArrowRight, TrendingUp, Gift, Truck, Shield, Headphones, Search as SearchIcon, Percent } from 'lucide-react';
 import Header from '@/components/shared/header';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -113,43 +113,47 @@ function HeroBanner() {
 function OfferBanners() {
   const offers = [
     {
-      title: "Flash Sale",
-      subtitle: "24 Hours Only!",
-      discount: "80% OFF",
-      bg: "bg-gradient-to-br from-red-500 to-orange-500",
-      icon: "⚡"
+      title: "Fast Delivery",
+      subtitle: "Within 1-3 working days",
+      Icon: Truck,
+      bg: "bg-blue-50",
+      iconColor: "text-blue-600",
+      link: "/offers/fast-delivery"
     },
     {
-      title: "Free Shipping",
-      subtitle: "On orders over $50",
-      discount: "FREE",
-      bg: "bg-gradient-to-br from-blue-500 to-cyan-500",
-      icon: "🚚"
+      title: "Free Delivery",
+      subtitle: "On orders over Rs:5000",
+      Icon: Gift,
+      bg: "bg-green-50",
+      iconColor: "text-green-600",
+      link: "/offers/free-delivery"
     },
     {
-      title: "New User",
-      subtitle: "Special discount",
-      discount: "25% OFF",
-      bg: "bg-gradient-to-br from-green-500 to-emerald-500",
-      icon: "🎁"
+      title: "Big Discounts for New Users",
+      subtitle: "Up to 20% off on selected items",
+      Icon: Percent,
+      bg: "bg-orange-50",
+      iconColor: "text-orange-600",
+      link: "/products?filter=discounted"
     }
   ];
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
       {offers.map((offer, index) => (
-        <Card key={index} className={`${offer.bg} text-white transform hover:scale-105 transition-transform cursor-pointer`}>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <div>
-                <CardTitle className="text-lg md:text-xl mb-1">{offer.title}</CardTitle>
-                <p className="opacity-90 text-xs md:text-sm">{offer.subtitle}</p>
-                <div className="mt-3 text-xl md:text-2xl font-black">{offer.discount}</div>
+        <Link to={offer.link} key={index}>
+          <Card className={`overflow-hidden h-full ${offer.bg} border-2 border-transparent hover:border-blue-500 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1`}>
+            <CardHeader className="flex flex-row items-center gap-4 p-6">
+              <div className={`p-3 rounded-full ${offer.iconColor} bg-white`}>
+                <offer.Icon className="w-6 h-6" />
               </div>
-              <div className="text-3xl md:text-4xl opacity-70">{offer.icon}</div>
-            </div>
-          </CardHeader>
-        </Card>
+              <div>
+                <CardTitle className="text-lg font-semibold text-gray-800">{offer.title}</CardTitle>
+                <p className="text-sm text-gray-600">{offer.subtitle}</p>
+              </div>
+            </CardHeader>
+          </Card>
+        </Link>
       ))}
     </div>
   );
@@ -337,7 +341,7 @@ export default function HomePage() {
       <main className="container mx-auto px-4 py-8">
         {/* Hero Section */}
         <section className="text-center mb-12">
-          <h1 className="text-3xl md:text-5xl font-bold text-gray-800 mb-4">Welcome to Agni Store</h1>
+          <h1 className="text-3xl md:text-5xl font-bold text-gray-800 mb-4">Welcome to Agni Online Store</h1>
           <p className="text-lg md:text-xl text-gray-600 mb-8">
             Your one-stop shop for everything you need.
           </p>
