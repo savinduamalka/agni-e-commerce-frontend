@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { ShoppingCart, Star, Heart, Eye, ArrowRight, TrendingUp, Gift, Truck, Shield, Headphones } from 'lucide-react';
 import Header from '@/components/shared/header';
 import { Input } from '@/components/ui/input';
@@ -279,10 +280,12 @@ function ShopByCategory() {
     <div className="mb-12">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-3xl font-bold">Shop by Category</h2>
-        <Button variant="outline" className="rounded-full">
-          <span>View All</span>
-          <ArrowRight className="w-4 h-4 ml-2" />
-        </Button>
+        <Link to="/categories">
+          <Button variant="outline" className="rounded-full">
+            <span>View All</span>
+            <ArrowRight className="w-4 h-4 ml-2" />
+          </Button>
+        </Link>
       </div>
       {loading ? (
         <div className="text-center">Loading categories...</div>
