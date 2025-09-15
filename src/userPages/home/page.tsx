@@ -235,26 +235,26 @@ function ProductCard({ product }: { product: Product }) {
 // Features Section
 function Features() {
   const features = [
-    { icon: Truck, title: "Free Shipping", desc: "On orders over $50" },
+    { icon: Truck, title: "Free Shipping", desc: "On orders over Rs:5000" },
     { icon: Shield, title: "Secure Payment", desc: "100% protected" },
     { icon: Headphones, title: "24/7 Support", desc: "Always here to help" },
     { icon: Gift, title: "Gift Cards", desc: "Perfect for everyone" }
   ];
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-8 mb-12">
       {features.map((feature, index) => {
         const Icon = feature.icon;
         return (
-          <Card key={index} className="text-center">
-            <CardContent className="p-6 flex flex-col items-center">
-              <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mb-4">
-                <Icon className="w-8 h-8 text-blue-600" />
-              </div>
-              <h3 className="font-semibold text-gray-800 mb-1">{feature.title}</h3>
+          <div key={index} className="flex items-start group">
+            <div className="bg-blue-100 text-blue-600 p-3 rounded-full mr-4 transition-all duration-300 group-hover:bg-blue-600 group-hover:text-white group-hover:scale-110">
+              <Icon className="w-6 h-6" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-gray-800 text-lg">{feature.title}</h3>
               <p className="text-sm text-gray-600">{feature.desc}</p>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         );
       })}
     </div>
