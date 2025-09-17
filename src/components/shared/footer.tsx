@@ -1,6 +1,79 @@
+import { useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import logo from "@/assets/logo.png";
+
+// Newsletter Subscription Component
+function NewsletterSubscription() {
+  const [email, setEmail] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [message, setMessage] = useState('');
+
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!email.trim()) {
+      setMessage('Please enter a valid email address');
+      return;
+    }
+
+    setIsLoading(true);
+    setMessage('');
+
+    try {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/subscriptions/subscribe`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: email.trim() }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast.success('Successfully subscribed to our newsletter!');
+        setEmail('');
+        setMessage(''); // Clear any previous error messages
+      } else {
+        setMessage(data.message || 'Failed to subscribe. Please try again.');
+      }
+    } catch (error) {
+      setMessage('Network error. Please try again later.');
+      console.error('Subscription error:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div>
+      <form onSubmit={handleSubscribe} className="flex mb-2">
+        <Input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Your email"
+          className="rounded-r-none"
+          disabled={isLoading}
+        />
+        <Button 
+          type="submit" 
+          className="rounded-l-none" 
+          disabled={isLoading}
+        >
+          {isLoading ? 'Subscribing...' : 'Subscribe'}
+        </Button>
+      </form>
+      {message && (
+        <p className="text-sm text-red-600">
+          {message}
+        </p>
+      )}
+    </div>
+  );
+}
 
 export default function Footer() {
   return (
@@ -79,14 +152,7 @@ export default function Footer() {
             <p className="text-gray-600 dark:text-gray-400 mb-4">
               Subscribe to our newsletter for the latest deals.
             </p>
-            <div className="flex">
-              <Input
-                type="email"
-                placeholder="Your email"
-                className="rounded-r-none"
-              />
-              <Button className="rounded-l-none">Subscribe</Button>
-            </div>
+            <NewsletterSubscription />
           </div>
         </div>
 
