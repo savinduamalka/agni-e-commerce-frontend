@@ -15,6 +15,8 @@ export default function ContactUsPage() {
     contactNumber: "",
     message: ""
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -24,11 +26,39 @@ export default function ContactUsPage() {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // logic
-    console.log("Form submitted:", formData);
-    // logic
+    setIsSubmitting(true);
+    setSubmitStatus('idle');
+    
+    try {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/contact/submit`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        setSubmitStatus('success');
+        setFormData({
+          name: "",
+          email: "",
+          contactNumber: "",
+          message: ""
+        });
+        console.log("Form submitted successfully:", formData);
+      } else {
+        setSubmitStatus('error');
+        console.error("Form submission failed:", response.statusText);
+      }
+    } catch (error) {
+      setSubmitStatus('error');
+      console.error("Error submitting form:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -124,11 +154,29 @@ export default function ContactUsPage() {
                         />
                       </div>
                       
+                      {/* Status Messages */}
+                      {submitStatus === 'success' && (
+                        <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+                          <p className="text-green-800 text-sm font-medium">
+                            ✅ Message sent successfully! We'll get back to you soon.
+                          </p>
+                        </div>
+                      )}
+                      
+                      {submitStatus === 'error' && (
+                        <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+                          <p className="text-red-800 text-sm font-medium">
+                            ❌ Failed to send message. Please try again or contact us directly.
+                          </p>
+                        </div>
+                      )}
+                      
                       <Button 
                         type="submit" 
-                        className="w-full h-12 bg-black hover:bg-gray-800 text-white font-semibold text-lg transition-all duration-300"
+                        disabled={isSubmitting}
+                        className="w-full h-12 bg-black hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-semibold text-lg transition-all duration-300"
                       >
-                        Send Message
+                        {isSubmitting ? "Sending Message..." : "Send Message"}
                       </Button>
                     </form>
                   </CardContent>
