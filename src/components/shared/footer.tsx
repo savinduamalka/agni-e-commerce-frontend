@@ -1,5 +1,7 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { toast } from "sonner";
+import { MapPin, Phone, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import logo from "@/assets/logo.png";
@@ -35,7 +37,7 @@ function NewsletterSubscription() {
       if (response.ok) {
         toast.success('Successfully subscribed to our newsletter!');
         setEmail('');
-        setMessage(''); // Clear any previous error messages
+        setMessage(''); 
       } else {
         setMessage(data.message || 'Failed to subscribe. Please try again.');
       }
@@ -83,12 +85,11 @@ export default function Footer() {
           {/* About Section */}
           <div>
             <div className="flex items-center mb-4">
-              <img src={logo} alt="Agni Store" className="h-8 w-auto mr-2" />
-              <h3 className="text-xl font-bold">Agni Store</h3>
+              <img src={logo} alt="Agni Store" className="h-30 w-auto mr-2" />
+              <h3 className="text-xl font-bold">Agni Online Store</h3>
             </div>
             <p className="text-gray-600 dark:text-gray-400">
-              Your trusted partner for all shopping needs. Quality products,
-              great prices, and exceptional service.
+              Your trusted partner for electronics shopping needs.
             </p>
           </div>
 
@@ -97,53 +98,68 @@ export default function Footer() {
             <h4 className="font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2">
               <li>
-                <a href="#" className="hover:text-blue-600">
-                  About Us
-                </a>
+                <Link to="/" className="text-gray-600 dark:text-gray-400 hover:text-blue-600 transition-colors">
+                  Home
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-blue-600">
+                <Link to="/categories" className="text-gray-600 dark:text-gray-400 hover:text-blue-600 transition-colors">
+                  Categories
+                </Link>
+              </li>
+              <li>
+                <Link to="/products" className="text-gray-600 dark:text-gray-400 hover:text-blue-600 transition-colors">
+                  Products
+                </Link>
+              </li>
+              <li>
+                <Link to="/offers" className="text-gray-600 dark:text-gray-400 hover:text-blue-600 transition-colors">
+                  Offers
+                </Link>
+              </li>
+              <li>
+                <Link to="/contact" className="text-gray-600 dark:text-gray-400 hover:text-blue-600 transition-colors">
                   Contact
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-blue-600">
-                  FAQ
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-blue-600">
-                  Shipping
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
 
-          {/* Categories */}
+          {/* Contact Information */}
           <div>
-            <h4 className="font-semibold mb-4">Categories</h4>
-            <ul className="space-y-2">
-              <li>
-                <a href="#" className="hover:text-blue-600">
-                  Electronics
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-blue-600">
-                  Fashion
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-blue-600">
-                  Home & Garden
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-blue-600">
-                  Sports
-                </a>
-              </li>
-            </ul>
+            <h4 className="font-semibold mb-4">Contact Us</h4>
+            <div className="space-y-3">
+              {/* Phone */}
+              <div className="flex items-center space-x-3">
+                <div className="flex-shrink-0 w-8 h-8 bg-black rounded-lg flex items-center justify-center">
+                  <Phone className="h-4 w-4 text-white" />
+                </div>
+                <div>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm">+94 72 5451111</p>
+                </div>
+              </div>
+
+              {/* Address */}
+              <div className="flex items-start space-x-3">
+                <div className="flex-shrink-0 w-8 h-8 bg-black rounded-lg flex items-center justify-center mt-0.5">
+                  <MapPin className="h-4 w-4 text-white" />
+                </div>
+                <div>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm">Pinnaduwa</p>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm">Galle, Sri Lanka</p>
+                </div>
+              </div>
+
+              {/* Email */}
+              <div className="flex items-center space-x-3">
+                <div className="flex-shrink-0 w-8 h-8 bg-black rounded-lg flex items-center justify-center">
+                  <Mail className="h-4 w-4 text-white" />
+                </div>
+                <div>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm">agnibookshop1@gmail.com</p>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Newsletter */}
@@ -159,7 +175,7 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="border-t border-gray-200 dark:border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-gray-500 dark:text-gray-400 text-sm mb-4 md:mb-0">
-            &copy; {new Date().getFullYear()} Agni Store. All rights reserved.
+            &copy; {new Date().getFullYear()} Agni Online Store. All rights reserved.
           </p>
           <div className="flex space-x-4">
             <Button variant="ghost" size="icon">
@@ -186,7 +202,16 @@ export default function Footer() {
                 fill="currentColor"
                 viewBox="0 0 24 24"
               >
-                <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616v.064c0 2.298 1.634 4.212 3.791 4.649-.69.188-1.423.23-2.16.084.616 1.924 2.396 3.316 4.491 3.355-1.64 1.28-3.712 2.024-5.962 2.024-.387 0-.769-.023-1.145-.067 2.111 1.354 4.621 2.162 7.34 2.162 8.807 0 13.61-7.278 13.61-13.61 0-.207-.005-.414-.014-.62a9.648 9.648 0 002.38-2.468z" />
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488" />
+              </svg>
+            </Button>
+            <Button variant="ghost" size="icon">
+              <svg
+                className="w-5 h-5"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z" />
               </svg>
             </Button>
           </div>
