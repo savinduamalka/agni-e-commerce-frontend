@@ -116,5 +116,22 @@
   }
   body {
     @apply bg-background text-foreground;
+    /* Prevent horizontal scrolling on mobile */
+    overflow-x: hidden;
   }
+}
+
+/* Mobile-specific cart styles */
+.cart-container {
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.cart-item {
+  max-width: 100%;
+}
+
+/* Ensure inputs don't cause overflow */
+input[type="number"] {
+  max-width: 100%;
 }
