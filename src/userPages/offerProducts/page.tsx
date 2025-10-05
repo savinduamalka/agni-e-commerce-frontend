@@ -18,7 +18,16 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
-import { Filter, LayoutGrid, List, Zap } from 'lucide-react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Filter, LayoutGrid, List, Zap, SlidersHorizontal } from 'lucide-react';
+import { Separator } from '@/components/ui/separator';
+import { Badge } from '@/components/ui/badge';
 
 interface GetOfferProductsParams {
   page?: number;
@@ -40,7 +49,6 @@ const getOfferProducts = async (
       }
     }
 
-    const query = new URLSearchParams(filteredParams).toString();
     const response = await fetch(
       `${import.meta.env.VITE_BACKEND_URL}/products/offers`
     );
@@ -60,28 +68,17 @@ const getOfferProducts = async (
   }
 };
 
-const OfferBanner = () => (
-  <div className="bg-gradient-to-r from-yellow-400 via-red-500 to-pink-500 text-white p-6 rounded-lg mb-8 text-center shadow-lg">
-    <div className="flex justify-center items-center mb-2">
-      <Zap size={32} className="mr-2" />
-      <h2 className="text-3xl font-bold">Flash Deals & Special Offers!</h2>
-    </div>
-    <p className="text-lg">
-      Don't miss out on our limited-time offers. Grab the best deals before
-      they're gone!
-    </p>
-  </div>
-);
-
 const OfferProductsPage = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [products, setProducts] = useState<Product[]>([]);
   const [totalPages, setTotalPages] = useState(0);
+  const [totalProducts, setTotalProducts] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [view, setView] = useState<'grid' | 'list'>('grid');
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   useEffect(() => {
     const fetchOfferProducts = async () => {
@@ -112,6 +109,7 @@ const OfferProductsPage = () => {
         const data = await getOfferProducts(params);
         setProducts(data.products);
         setTotalPages(data.totalPages);
+        setTotalProducts(data.totalProducts);
       } catch (err) {
         const errorMessage =
           err instanceof Error ? err.message : 'An unknown error occurred';
@@ -130,83 +128,211 @@ const OfferProductsPage = () => {
     const newSearchParams = new URLSearchParams(searchParams);
     newSearchParams.set('page', String(page));
     navigate({ search: newSearchParams.toString() });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleSortChange = (value: string) => {
+    const newSearchParams = new URLSearchParams(searchParams);
+    if (value) {
+      const [sortBy, sortOrder] = value.split('-');
+      newSearchParams.set('sortBy', sortBy);
+      newSearchParams.set('sortOrder', sortOrder);
+      newSearchParams.set('page', '1');
+    }
+    navigate({ search: newSearchParams.toString() });
+  };
+
+  const activeFiltersCount = () => {
+    let count = 0;
+    if (searchParams.get('minDiscount')) {
+      count++;
+    }
+    if (searchParams.get('maxDiscount')) {
+      count++;
+    }
+    return count;
   };
 
   return (
     <>
       <Toaster richColors />
       <Header />
+
+      {/* Main Content */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <OfferBanner />
-        <div className="mb-4 flex items-center justify-between">
-          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
-            Offer Zone
-          </h1>
-          <div className="flex items-center gap-2">
-            <div className="flex items-center gap-2">
-              <Button
-                variant={view === 'grid' ? 'secondary' : 'ghost'}
-                size="icon"
-                onClick={() => setView('grid')}
-              >
-                <LayoutGrid className="h-5 w-5" />
-              </Button>
-              <Button
-                variant={view === 'list' ? 'secondary' : 'ghost'}
-                size="icon"
-                onClick={() => setView('list')}
-              >
-                <List className="h-5 w-5" />
-              </Button>
-            </div>
-            <Sheet>
+        {/* Toolbar - Filters, Sort, View Options */}
+        <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div className="flex items-center gap-3">
+            {/* Mobile Filter Button */}
+            <Sheet open={isFilterOpen} onOpenChange={setIsFilterOpen}>
               <SheetTrigger asChild>
-                <Button variant="outline" className="lg:hidden">
-                  <Filter className="mr-2 h-4 w-4" />
+                <Button
+                  variant="outline"
+                  className="lg:hidden relative border-2 hover:border-red-500 transition-colors"
+                >
+                  <SlidersHorizontal className="mr-2 h-4 w-4" />
                   Filters
+                  {activeFiltersCount() > 0 && (
+                    <Badge className="ml-2 bg-red-500 text-white text-xs font-semibold px-2 py-0.5 rounded-full">
+                      {activeFiltersCount()}
+                    </Badge>
+                  )}
                 </Button>
               </SheetTrigger>
-              <SheetContent>
+              <SheetContent
+                side="left"
+                className="w-full sm:w-[400px] overflow-y-auto"
+              >
                 <SheetHeader>
-                  <SheetTitle>Filters</SheetTitle>
+                  <SheetTitle className="text-xl font-bold flex items-center gap-2">
+                    <Filter className="h-5 w-5" />
+                    Filter Offers
+                  </SheetTitle>
                 </SheetHeader>
-                <OfferProductFilters />
+                <Separator className="my-4" />
+                <OfferProductFilters onClose={() => setIsFilterOpen(false)} />
               </SheetContent>
             </Sheet>
+
+            {/* Results Count */}
+            <div className="flex items-center gap-2">
+              <Zap className="h-5 w-5 text-red-500 animate-pulse" />
+              <div className="text-sm text-gray-600">
+                {loading ? (
+                  <span className="animate-pulse">Loading offers...</span>
+                ) : (
+                  <span className="font-medium">
+                    {totalProducts > 0 ? (
+                      <>
+                        <span className="text-red-600 font-bold">
+                          {totalProducts}
+                        </span>{' '}
+                        special {totalProducts === 1 ? 'offer' : 'offers'}
+                      </>
+                    ) : (
+                      'No offers found'
+                    )}
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Sort and View Controls */}
+          <div className="flex items-center gap-3">
+            {/* Sort Dropdown */}
+            <Select
+              onValueChange={handleSortChange}
+              defaultValue={`${
+                searchParams.get('sortBy') || 'offerPercentage'
+              }-${searchParams.get('sortOrder') || 'desc'}`}
+            >
+              <SelectTrigger className="w-[200px] border-2 hover:border-red-500 transition-colors">
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="offerPercentage-desc">
+                  🔥 Best Deals First
+                </SelectItem>
+                <SelectItem value="offerPercentage-asc">
+                  💰 Lowest Discount First
+                </SelectItem>
+                <SelectItem value="price-asc">💵 Price: Low to High</SelectItem>
+                <SelectItem value="price-desc">
+                  💎 Price: High to Low
+                </SelectItem>
+                <SelectItem value="createdAt-desc">✨ Newest First</SelectItem>
+              </SelectContent>
+            </Select>
+
+            {/* View Toggle */}
+            <div className="hidden sm:flex items-center gap-1 border-2 border-gray-200 rounded-lg p-1">
+              <Button
+                variant={view === 'grid' ? 'default' : 'ghost'}
+                size="icon"
+                onClick={() => setView('grid')}
+                className={view === 'grid' ? 'bg-red-500 hover:bg-red-600' : ''}
+                aria-label="Grid view"
+              >
+                <LayoutGrid className="h-4 w-4" />
+              </Button>
+              <Button
+                variant={view === 'list' ? 'default' : 'ghost'}
+                size="icon"
+                onClick={() => setView('list')}
+                className={view === 'list' ? 'bg-red-500 hover:bg-red-600' : ''}
+                aria-label="List view"
+              >
+                <List className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          <div className="hidden lg:block lg:col-span-1">
-            <OfferProductFilters />
-          </div>
-          <div className="lg:col-span-3">
+
+        {/* Products Grid with Sidebar */}
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+          {/* Desktop Filter Sidebar */}
+          <aside className="hidden lg:block lg:col-span-1">
+            <div className="sticky top-8">
+              <OfferProductFilters />
+            </div>
+          </aside>
+
+          {/* Products Content */}
+          <main className="lg:col-span-4">
             {loading ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+              <div
+                className={`grid gap-6 ${
+                  view === 'grid'
+                    ? 'grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4'
+                    : 'grid-cols-1'
+                }`}
+              >
                 {Array.from({ length: 12 }).map((_, i) => (
                   <ProductCardSkeleton key={i} />
                 ))}
               </div>
             ) : error ? (
-              <div className="text-center text-red-500">{error}</div>
+              <div className="text-center py-16">
+                <div className="text-red-500 text-lg font-medium mb-2">
+                  ⚠️ {error}
+                </div>
+                <p className="text-gray-500">Please try again later</p>
+              </div>
             ) : products.length > 0 ? (
               <>
                 <ProductGrid products={products} view={view} />
-                <div className="mt-8">
-                  <Pagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    onPageChange={handlePageChange}
-                  />
-                </div>
+                {totalPages > 1 && (
+                  <div className="mt-12 flex justify-center">
+                    <Pagination
+                      currentPage={currentPage}
+                      totalPages={totalPages}
+                      onPageChange={handlePageChange}
+                    />
+                  </div>
+                )}
               </>
             ) : (
-              <div className="text-center text-gray-500">
-                No special offers found at the moment. Check back soon!
+              <div className="text-center py-16">
+                <div className="text-6xl mb-4">🎁</div>
+                <h3 className="text-2xl font-semibold text-gray-800 mb-2">
+                  No Offers Available
+                </h3>
+                <p className="text-gray-500 mb-6">
+                  Check back soon for amazing deals!
+                </p>
+                <Button
+                  onClick={() => navigate('/products')}
+                  className="bg-red-500 hover:bg-red-600"
+                >
+                  Browse All Products
+                </Button>
               </div>
             )}
-          </div>
+          </main>
         </div>
       </div>
+
       <Footer />
     </>
   );

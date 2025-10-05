@@ -1,263 +1,413 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, type SyntheticEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ShoppingCart, Star, Heart, Eye, ArrowRight, TrendingUp, Gift, Truck, Shield, Headphones, Search as SearchIcon, Percent } from 'lucide-react';
+import {
+  ShoppingCart,
+  Star,
+  Heart,
+  ArrowRight,
+  Truck,
+  Shield,
+  Headphones,
+  Search as SearchIcon,
+  Sparkles,
+  Tag,
+} from 'lucide-react';
 import Header from '@/components/shared/header';
+import Footer from '@/components/shared/footer';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
-import Footer from '@/components/shared/footer';
-import type { Category } from '@/lib/types';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
+import type { Category, Product } from '@/lib/types';
+import { toast } from 'sonner';
+import { useCart } from '../../context/CartContext';
 import banner1 from '@/assets/banner1.png';
 import banner2 from '@/assets/banner2.png';
 import banner3 from '@/assets/banner3.png';
 
-// Search Component
+const createPlaceholderDataUri = (text: string, size = 200) =>
+  `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
+    <svg xmlns='http://www.w3.org/2000/svg' width='${size}' height='${size}' viewBox='0 0 ${size} ${size}'>
+      <rect width='100%' height='100%' fill='#f3f4f6'/>
+      <text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='Arial, sans-serif' font-size='${Math.max(
+        14,
+        size / 8
+      )}' fill='#9ca3af'>${text}</text>
+    </svg>
+  `)}`;
+
+const FALLBACK_PRODUCT_IMAGE = createPlaceholderDataUri('Product image', 320);
+const FALLBACK_CATEGORY_IMAGE = createPlaceholderDataUri('Category', 160);
+const FALLBACK_HERO_IMAGE = createPlaceholderDataUri('Agni Store', 560);
+
+const HERO_SLIDES = [
+  {
+    id: 'grand-opening',
+    title: 'Grand opening specials are live',
+    subtitle:
+      'Celebrate our new space with exclusive bundles and early bird savings.',
+    image: banner1,
+    ctaLabel: 'Shop the launch edit',
+    ctaHref: '/products',
+  },
+  {
+    id: 'lifestyle-refresh',
+    title: 'Refresh your workspace & routine',
+    subtitle:
+      'Minimal gear, mindful stationery, and everyday tech that keeps pace.',
+    image: banner2,
+    ctaLabel: 'Browse lifestyle picks',
+    ctaHref: '/categories',
+  },
+  {
+    id: 'member-perks',
+    title: 'Member-only offers drop weekly',
+    subtitle:
+      'Unlock bonus points, surprise drops, and free delivery on featured lines.',
+    image: banner3,
+    ctaLabel: 'See weekly offers',
+    ctaHref: '/offers',
+  },
+];
+
+const setFallbackImage = (
+  event: SyntheticEvent<HTMLImageElement, Event>,
+  fallbackSrc: string
+) => {
+  const img = event.currentTarget;
+  if (img.src === fallbackSrc) {
+    return;
+  }
+  img.onerror = null;
+  img.src = fallbackSrc;
+};
+
 function Search() {
   const [query, setQuery] = useState('');
   const navigate = useNavigate();
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (query.trim()) {
-      navigate(`/products?search=${query.trim()}`);
+  const handleSearch = (event: React.FormEvent) => {
+    event.preventDefault();
+    const trimmed = query.trim();
+    if (!trimmed) {
+      return;
     }
+    navigate(`/products?search=${encodeURIComponent(trimmed)}`);
   };
 
   return (
-    <form onSubmit={handleSearch} className="relative w-full max-w-3xl mx-auto">
+    <form
+      onSubmit={handleSearch}
+      className="flex items-center gap-3 rounded-full border border-slate-200 bg-white p-2 shadow-sm"
+    >
+      <SearchIcon className="ml-1 h-5 w-5 text-slate-400" />
       <Input
         type="text"
         value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        placeholder="Search for products, brands and more..."
-        className="w-full pl-6 pr-16 py-6 text-xl rounded-full focus:outline-none shadow-2xl transition-shadow focus:shadow-blue-200 border-2 border-transparent focus:border-blue-500"
+        onChange={(event) => setQuery(event.target.value)}
+        placeholder="Search for products, brands, and more"
+        className="h-10 flex-1 border-none bg-transparent px-0 text-sm focus-visible:ring-0"
       />
-      <Button type="submit" variant="default" className="absolute right-2.5 top-1/2 transform -translate-y-1/2 h-14 w-14 p-3 rounded-full transition-transform hover:scale-105 bg-blue-600 hover:bg-blue-700">
-        <SearchIcon className="w-6 h-6 text-white" />
+      <Button
+        type="submit"
+        className="rounded-full bg-teal-600 px-5 text-sm font-semibold text-white hover:bg-teal-700"
+      >
+        Search
       </Button>
     </form>
   );
 }
 
-// Hero Banner Component
-function HeroBanner() {
+function HeroSection() {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const slides = [
-    {
-      title: "AGNI BOOKSHOP AND COMMUNICATION",
-      subtitle: "WILL OPEN AT NEW LOCATION SOON",
-      imageUrl: banner1,
-    },
-    {
-      title: "SHOP WITH AGNI ONLINE STORE",
-      subtitle: "Discover the latest in tech and accessories",
-      imageUrl: banner2,
-    },
-    {
-      title: "AGNI ONLINE STORE",
-      subtitle: "GRAND OPENING",
-      imageUrl: banner3,
-    }
-  ];
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % slides.length);
+      setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length);
     }, 5000);
+
     return () => clearInterval(timer);
   }, []);
 
   return (
-    <div className="relative h-64 md:h-96 rounded-3xl overflow-hidden mb-12">
-      {slides.map((slide, index) => (
-        <div
-          key={index}
-          className={`absolute inset-0 transition-transform duration-500 ${
-            index === currentSlide ? 'translate-x-0' : 
-            index < currentSlide ? '-translate-x-full' : 'translate-x-full'
-          }`}
-        >
-          <img src={slide.imageUrl} alt={slide.title} className="w-full h-full object-cover" />
-          <div className="absolute inset-0 flex items-center justify-center text-center h-full px-6 md:px-12">
-            <div className="text-white space-y-2 md:space-y-4 bg-black bg-opacity-50 p-6 rounded-lg">
-              <h2 className="text-2xl md:text-5xl font-bold">{slide.title}</h2>
-              <p className="text-base md:text-xl opacity-90">{slide.subtitle}</p>
-              <Link to="/products">
-                <Button variant="secondary" size="lg" className="rounded-full">
-                  <span>Shop Now</span>
-                  <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      ))}
-      
-      {/* Slide indicators */}
-      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
-        {slides.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => setCurrentSlide(index)}
-            className={`w-3 h-3 rounded-full transition-colors ${
-              index === currentSlide ? 'bg-white' : 'bg-white/50'
-            }`}
-          />
-        ))}
-      </div>
-    </div>
-  );
-}
-
-// Offer Banners Component
-function OfferBanners() {
-  const offers = [
-    {
-      title: "Fast Delivery",
-      subtitle: "Within 1-3 working days",
-      Icon: Truck,
-      bg: "bg-blue-50",
-      iconColor: "text-blue-600",
-      link: "/offers/fast-delivery"
-    },
-    {
-      title: "Free Delivery",
-      subtitle: "On orders over Rs:5000",
-      Icon: Gift,
-      bg: "bg-green-50",
-      iconColor: "text-green-600",
-      link: "/offers/free-delivery"
-    },
-    {
-      title: "Big Discounts for New Users",
-      subtitle: "Up to 20% off on selected items",
-      Icon: Percent,
-      bg: "bg-orange-50",
-      iconColor: "text-orange-600",
-      link: "/products?filter=discounted"
-    }
-  ];
-
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-      {offers.map((offer, index) => (
-        <Link to={offer.link} key={index}>
-          <Card className={`overflow-hidden h-full ${offer.bg} border-2 border-transparent hover:border-blue-500 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1`}>
-            <CardHeader className="flex flex-row items-center gap-4 p-6">
-              <div className={`p-3 rounded-full ${offer.iconColor} bg-white`}>
-                <offer.Icon className="w-6 h-6" />
-              </div>
-              <div>
-                <CardTitle className="text-lg font-semibold text-gray-800">{offer.title}</CardTitle>
-                <p className="text-sm text-gray-600">{offer.subtitle}</p>
-              </div>
-            </CardHeader>
-          </Card>
-        </Link>
-      ))}
-    </div>
-  );
-}
-
-type Product = {
-    id: number;
-    name: string;
-    price: number;
-    originalPrice?: number;
-    rating: number;
-    reviews: number;
-    image: string;
-    discount?: number;
-  };
-
-// Product Card Component
-function ProductCard({ product }: { product: Product }) {
-  const [isLiked, setIsLiked] = useState(false);
-
-  return (
-    <Card className="group overflow-hidden">
-      <CardHeader className="p-0">
-        <div className="relative overflow-hidden">
-          <div className="bg-gray-100 h-48 flex items-center justify-center text-6xl group-hover:scale-110 transition-transform duration-300">
-            {product.image}
-          </div>
-          <div className="absolute top-3 right-3 flex flex-col space-y-2">
+    <section className="pt-10 pb-16 sm:pt-12">
+      <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
+        <Badge className="mb-6 inline-flex items-center gap-2 rounded-full bg-teal-50 px-5 py-2 text-xs font-semibold uppercase tracking-wide text-teal-700">
+          <Sparkles className="h-4 w-4" />
+          Fresh arrivals weekly
+        </Badge>
+        <h1 className="text-4xl font-semibold leading-tight text-slate-900 md:text-5xl">
+          Your trusted destination
+        </h1>
+        <p className="mt-4 text-base text-slate-600 md:text-lg">
+          for quality products at competitive prices. Shop with confidence.
+        </p>
+        <div className="mt-6 flex flex-wrap justify-center gap-3">
+          <Link to="/products">
+            <Button className="rounded-full bg-teal-600 px-7 py-2 text-sm font-semibold text-white hover:bg-teal-700">
+              Browse collection
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          </Link>
+          <Link to="/offers">
             <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setIsLiked(!isLiked)}
-              className={`rounded-full ${
-                isLiked ? 'bg-red-500 text-white hover:bg-red-600' : 'bg-white/80 text-gray-600 hover:bg-red-500 hover:text-white'
-              }`}
+              variant="outline"
+              className="rounded-full border-teal-600 px-7 py-2 text-sm font-semibold text-teal-600 hover:bg-teal-50"
             >
-              <Heart className="w-4 h-4" />
+              View offers
             </Button>
-            <Button variant="ghost" size="icon" className="bg-white/80 text-gray-600 rounded-full hover:bg-blue-500 hover:text-white transition-colors">
-              <Eye className="w-4 h-4" />
-            </Button>
-          </div>
-          {product.discount && (
-            <div className="absolute top-3 left-3 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
-              -{product.discount}%
-            </div>
-          )}
+          </Link>
         </div>
-      </CardHeader>
-      <CardContent className="p-4">
-        <h3 className="font-semibold text-gray-800 mb-2">{product.name}</h3>
-        <div className="flex items-center space-x-1 mb-2">
-          {[...Array(5)].map((_, i) => (
-            <Star
-              key={i}
-              className={`w-4 h-4 ${
-                i < product.rating ? 'text-yellow-400 fill-current' : 'text-gray-300'
+        <div className="mt-8 w-full max-w-xl">
+          <Search />
+        </div>
+      </div>
+
+      <div className="relative mx-auto mt-12 w-full max-w-5xl">
+        <div className="relative overflow-hidden rounded-[2.5rem] border border-slate-200 bg-white shadow-lg">
+          <div className="relative aspect-[16/7] w-full">
+            {HERO_SLIDES.map((slide, index) => (
+              <article
+                key={slide.id}
+                className={`absolute inset-0 transition-all duration-700 ease-in-out ${
+                  index === currentSlide
+                    ? 'opacity-100 blur-0'
+                    : 'pointer-events-none opacity-0 blur-sm'
+                }`}
+              >
+                <img
+                  src={slide.image}
+                  alt={slide.title}
+                  className="h-full w-full object-cover"
+                  onError={(event) =>
+                    setFallbackImage(event, FALLBACK_HERO_IMAGE)
+                  }
+                />
+                <div className="absolute inset-0 bg-gradient-to-tr from-black/55 via-black/25 to-transparent" />
+                <div className="absolute inset-x-0 bottom-0 p-8 text-left text-white md:p-12">
+                  <p className="text-xs uppercase tracking-[0.3em] text-teal-200">
+                    Agni Picks
+                  </p>
+                  <h2 className="mt-3 text-2xl font-semibold md:text-3xl">
+                    {slide.title}
+                  </h2>
+                  <p className="mt-2 max-w-2xl text-sm text-white/85 md:text-base">
+                    {slide.subtitle}
+                  </p>
+                  <Link
+                    to={slide.ctaHref}
+                    className="mt-5 inline-flex items-center text-sm font-semibold text-white"
+                  >
+                    {slide.ctaLabel}
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+        <div className="absolute -bottom-10 left-1/2 flex -translate-x-1/2 gap-2">
+          {HERO_SLIDES.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentSlide(index)}
+              className={`h-2 w-8 rounded-full transition-colors ${
+                index === currentSlide
+                  ? 'bg-teal-600'
+                  : 'bg-slate-300 hover:bg-teal-400'
               }`}
+              aria-label={`Show slide ${index + 1}`}
             />
           ))}
-          <span className="text-sm text-gray-500 ml-2">({product.reviews})</span>
         </div>
-      </CardContent>
-      <CardFooter className="flex items-center justify-between p-4 pt-0">
-        <div className="flex items-center space-x-2">
-          <span className="text-xl font-bold text-gray-800">${product.price}</span>
-          {product.originalPrice && (
-            <span className="text-sm text-gray-500 line-through">${product.originalPrice}</span>
-          )}
+      </div>
+
+      <div className="mt-16 flex justify-center">
+        <div className="flex items-center gap-3 rounded-2xl border border-teal-100 bg-white px-6 py-4 text-sm text-slate-600 shadow-sm">
+          <span className="font-semibold text-teal-600">Same-day dispatch</span>
+          <span className="hidden h-4 w-px bg-slate-200 md:block" />
+          <span>Order before 2PM and we ship today</span>
         </div>
-        <Button size="icon">
-          <ShoppingCart className="w-4 h-4" />
-        </Button>
-      </CardFooter>
-    </Card>
+      </div>
+    </section>
   );
 }
 
-// Features Section
-function Features() {
-  const features = [
-    { icon: Truck, title: "Free Shipping", desc: "On orders over Rs:5000" },
-    { icon: Shield, title: "Secure Payment", desc: "100% protected" },
-    { icon: Headphones, title: "24/7 Support", desc: "Always here to help" },
-    { icon: Gift, title: "Gift Cards", desc: "Perfect for everyone" }
+function ServiceHighlights() {
+  const items = [
+    {
+      icon: Truck,
+      title: 'Fast delivery',
+      description: 'Trackable shipping across the island',
+    },
+    {
+      icon: Shield,
+      title: 'Protected payments',
+      description: 'Secure gateways with buyer protection',
+    },
+    {
+      icon: Headphones,
+      title: 'Thoughtful support',
+      description: 'Dedicated agents by chat or phone',
+    },
   ];
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-8 mb-12">
-      {features.map((feature, index) => {
-        const Icon = feature.icon;
+    <section className="grid gap-4 rounded-3xl border border-slate-200 bg-slate-50/60 p-6 md:grid-cols-3">
+      {items.map((item) => {
+        const Icon = item.icon;
         return (
-          <div key={index} className="flex items-start group">
-            <div className="bg-blue-100 text-blue-600 p-3 rounded-full mr-4 transition-all duration-300 group-hover:bg-blue-600 group-hover:text-white group-hover:scale-110">
-              <Icon className="w-6 h-6" />
-            </div>
+          <div
+            key={item.title}
+            className="flex items-start gap-4 rounded-2xl bg-white p-6 shadow-sm transition-transform hover:-translate-y-1"
+          >
+            <span className="flex h-12 w-12 items-center justify-center rounded-full bg-teal-100 text-teal-700">
+              <Icon className="h-5 w-5" />
+            </span>
             <div>
-              <h3 className="font-semibold text-gray-800 text-lg">{feature.title}</h3>
-              <p className="text-sm text-gray-600">{feature.desc}</p>
+              <p className="font-semibold text-slate-900">{item.title}</p>
+              <p className="text-sm text-slate-600">{item.description}</p>
             </div>
           </div>
         );
       })}
-    </div>
+    </section>
+  );
+}
+
+function OfferProductCard({ product }: { product: Product }) {
+  const [isWishlisted, setIsWishlisted] = useState(false);
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
+  const { addToCart } = useCart();
+
+  const primaryImage = product.images?.[0] ?? FALLBACK_PRODUCT_IMAGE;
+  const labeledPrice = Number(product.labeledPrice) || 0;
+  const discountPercentage =
+    product.isOffer && labeledPrice > product.price
+      ? Math.round(((labeledPrice - product.price) / labeledPrice) * 100)
+      : 0;
+  const averageRating = Number(product.averageRating) || 0;
+  const totalReviews = Number(product.totalReviews) || 0;
+
+  const handleAddToCart = async (event: React.MouseEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (product.stock === 0) {
+      toast.error('Product is out of stock');
+      return;
+    }
+
+    setIsAddingToCart(true);
+    const success = await addToCart(product.id, 1);
+    if (success) {
+      toast.success(`${product.name} added to cart`);
+    }
+    setIsAddingToCart(false);
+  };
+
+  const toggleWishlist = (event: React.MouseEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setIsWishlisted((prev) => !prev);
+    toast.success(isWishlisted ? 'Removed from wishlist' : 'Added to wishlist');
+  };
+
+  return (
+    <Link to={`/productDetail/${product.id}`}>
+      <Card className="group flex h-full flex-col overflow-hidden border border-slate-200 shadow-none transition-transform duration-300 hover:-translate-y-1 hover:border-teal-500 hover:shadow-md">
+        <div className="relative overflow-hidden bg-white">
+          <div className="flex aspect-square items-center justify-center">
+            <img
+              src={primaryImage}
+              alt={product.name}
+              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+              loading="lazy"
+              onError={(event) =>
+                setFallbackImage(event, FALLBACK_PRODUCT_IMAGE)
+              }
+            />
+          </div>
+          {discountPercentage > 0 && (
+            <div className="absolute left-3 top-3">
+              <Badge className="rounded-full bg-teal-600 px-3 py-1 text-xs font-semibold text-white">
+                -{discountPercentage}%
+              </Badge>
+            </div>
+          )}
+          <div className="absolute right-3 top-3 opacity-0 transition-all duration-300 group-hover:opacity-100">
+            <Button
+              variant="secondary"
+              size="icon"
+              onClick={toggleWishlist}
+              className={`${
+                isWishlisted
+                  ? 'bg-teal-600 text-white hover:bg-teal-700'
+                  : 'bg-white text-slate-600 hover:bg-teal-50'
+              } rounded-full shadow-sm`}
+            >
+              <Heart
+                className={`h-4 w-4 ${isWishlisted ? 'fill-current' : ''}`}
+              />
+            </Button>
+          </div>
+        </div>
+        <CardContent className="flex flex-1 flex-col gap-3 p-5">
+          {product.brand && (
+            <p className="text-xs font-semibold uppercase tracking-wide text-teal-600">
+              {product.brand}
+            </p>
+          )}
+          <h3 className="line-clamp-2 min-h-[2.6rem] font-semibold text-slate-900 transition-colors group-hover:text-teal-600">
+            {product.name}
+          </h3>
+          <div className="flex items-center gap-2 text-sm">
+            <div className="flex items-center gap-[2px] text-yellow-400">
+              {[...Array(5)].map((_, index) => (
+                <Star
+                  key={index}
+                  className={`h-4 w-4 ${
+                    index < Math.round(averageRating)
+                      ? 'fill-yellow-400 text-yellow-400'
+                      : 'text-slate-300'
+                  }`}
+                />
+              ))}
+            </div>
+            <span className="text-xs text-slate-500">({totalReviews})</span>
+          </div>
+          <div className="mt-auto flex items-center justify-between">
+            <div className="flex items-baseline gap-2">
+              <span className="text-2xl font-semibold text-slate-900">
+                ${product.price.toFixed(2)}
+              </span>
+              {discountPercentage > 0 && (
+                <span className="text-sm text-slate-500 line-through">
+                  ${labeledPrice.toFixed(2)}
+                </span>
+              )}
+            </div>
+          </div>
+          <Button
+            onClick={handleAddToCart}
+            disabled={product.stock === 0 || isAddingToCart}
+            className="w-full rounded-full bg-teal-600 py-3 text-sm font-semibold text-white hover:bg-teal-700"
+          >
+            {isAddingToCart ? (
+              'Adding…'
+            ) : product.stock === 0 ? (
+              'Out of stock'
+            ) : (
+              <span className="flex items-center justify-center gap-2">
+                <ShoppingCart className="h-4 w-4" />
+                Add to cart
+              </span>
+            )}
+          </Button>
+        </CardContent>
+      </Card>
+    </Link>
   );
 }
 
@@ -270,20 +420,23 @@ function ShopByCategory() {
     const fetchCategories = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/categories`);
+        const response = await fetch(
+          `${import.meta.env.VITE_BACKEND_URL}/categories`
+        );
         if (!response.ok) {
           throw new Error('Failed to fetch categories');
         }
         const data = await response.json();
-        const categoriesData = data.data.categories;
+        const categoriesData = data.data?.categories;
         if (Array.isArray(categoriesData)) {
           setCategories(categoriesData);
         } else {
-          throw new Error("Unexpected data format from API");
+          throw new Error('Unexpected response format');
         }
-      } catch (err: any) {
-        setError(err.message);
-        console.error(err);
+      } catch (error) {
+        const message =
+          error instanceof Error ? error.message : 'Something went wrong';
+        setError(message);
       } finally {
         setLoading(false);
       }
@@ -293,97 +446,184 @@ function ShopByCategory() {
   }, []);
 
   return (
-    <div className="mb-12">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-3xl font-bold">Shop by Category</h2>
+    <section className="space-y-6 py-12">
+      <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+        <div>
+          <h2 className="text-3xl font-semibold text-slate-900">
+            Shop by category
+          </h2>
+          <p className="text-slate-600">
+            Explore new picks hand-picked by our team
+          </p>
+        </div>
         <Link to="/categories">
-          <Button variant="outline" className="rounded-full">
-            <span>View All</span>
-            <ArrowRight className="w-4 h-4 ml-2" />
+          <Button
+            variant="outline"
+            className="rounded-full border-teal-600 px-6 text-sm font-semibold text-teal-600 hover:bg-teal-50"
+          >
+            View all
+            <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
         </Link>
       </div>
       {loading ? (
-        <div className="text-center">Loading categories...</div>
-      ) : error ? (
-        <div className="text-center text-red-500">Error: {error}</div>
-      ) : (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {categories.slice(0, 8).map((category) => (
-            <Card key={category._id} className="flex flex-col items-center justify-center p-4 aspect-square text-center hover:bg-gray-50 transition-colors cursor-pointer">
-              <img src={category.image} alt={category.name} className="w-16 h-16 object-contain mb-2" />
-              <h3 className="font-semibold text-gray-700">{category.name}</h3>
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-6">
+          {[...Array(6)].map((_, index) => (
+            <Card
+              key={index}
+              className="flex aspect-square flex-col items-center justify-center border border-slate-200"
+            >
+              <Skeleton className="h-16 w-16 rounded-full" />
+              <Skeleton className="mt-4 h-4 w-24" />
             </Card>
           ))}
         </div>
+      ) : error ? (
+        <div className="rounded-2xl border border-red-100 bg-red-50 p-8 text-center">
+          <p className="text-sm font-semibold text-red-600">{error}</p>
+          <p className="mt-2 text-sm text-red-500">
+            Please try again in a moment.
+          </p>
+        </div>
+      ) : categories.length === 0 ? (
+        <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center text-slate-500">
+          Categories will appear here once they are ready.
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-6">
+          {categories.slice(0, 12).map((category) => (
+            <Link key={category._id} to={`/categories/${category._id}`}>
+              <Card className="group flex aspect-square flex-col items-center justify-center gap-4 border border-slate-200 transition-all hover:-translate-y-1 hover:border-teal-500 hover:shadow-sm">
+                <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-full bg-slate-100">
+                  <img
+                    src={category.image || FALLBACK_CATEGORY_IMAGE}
+                    alt={category.name}
+                    className="h-full w-full object-cover"
+                    onError={(event) =>
+                      setFallbackImage(event, FALLBACK_CATEGORY_IMAGE)
+                    }
+                  />
+                </div>
+                <h3 className="text-sm font-medium text-slate-700 group-hover:text-teal-600">
+                  {category.name}
+                </h3>
+              </Card>
+            </Link>
+          ))}
+        </div>
       )}
-    </div>
+    </section>
   );
 }
 
-// Featured Products Component
-const featuredProducts: Product[] = [
-  { id: 1, name: "Wireless Headphones", price: 79.99, originalPrice: 99.99, rating: 4, reviews: 124, image: "🎧", discount: 20 },
-  { id: 2, name: "Smart Watch", price: 199.99, originalPrice: 299.99, rating: 5, reviews: 89, image: "⌚", discount: 33 },
-  { id: 3, name: "Laptop Backpack", price: 49.99, rating: 4, reviews: 67, image: "🎒" },
-  { id: 4, name: "Bluetooth Speaker", price: 39.99, originalPrice: 59.99, rating: 4, reviews: 156, image: "🔊", discount: 33 },
-  { id: 5, name: "Fitness Tracker", price: 89.99, rating: 5, reviews: 203, image: "📱" },
-  { id: 6, name: "Gaming Mouse", price: 29.99, originalPrice: 49.99, rating: 4, reviews: 78, image: "🖱️", discount: 40 },
-  { id: 7, name: "USB-C Hub", price: 34.99, rating: 4, reviews: 92, image: "🔌" },
-  { id: 8, name: "Desk Organizer", price: 24.99, originalPrice: 34.99, rating: 5, reviews: 45, image: "📚", discount: 29 }
-];
+function HotOffers() {
+  const [offers, setOffers] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const loadOffers = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/products?isOffer=true&limit=8`
+      );
+      if (!response.ok) {
+        throw new Error('Failed to fetch offers');
+      }
+      const data = await response.json();
+      if (Array.isArray(data.products)) {
+        setOffers(data.products);
+      } else {
+        throw new Error('Unexpected response format');
+      }
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : 'Something went wrong';
+      setError(message);
+      toast.error('Failed to load offers');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    void loadOffers();
+  }, [loadOffers]);
+
+  return (
+    <section className="space-y-8 py-12">
+      <div className="flex flex-col gap-2 text-center">
+        <h2 className="text-3xl font-semibold text-slate-900">
+          Hot offers right now
+        </h2>
+        <p className="text-slate-600">
+          Handpicked deals refreshed daily—grab them before they're gone.
+        </p>
+      </div>
+      {loading ? (
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {[...Array(8)].map((_, index) => (
+            <Card
+              key={index}
+              className="overflow-hidden border border-slate-200"
+            >
+              <Skeleton className="block aspect-square" />
+              <div className="space-y-3 p-4">
+                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="h-4 w-1/2" />
+                <Skeleton className="h-10 w-full" />
+              </div>
+            </Card>
+          ))}
+        </div>
+      ) : error ? (
+        <div className="rounded-2xl border border-red-100 bg-red-50 p-8 text-center">
+          <p className="text-sm font-semibold text-red-600">{error}</p>
+          <p className="mt-2 text-sm text-red-500">Please try again shortly.</p>
+          <div className="mt-4">
+            <Button variant="outline" onClick={loadOffers}>
+              Try again
+            </Button>
+          </div>
+        </div>
+      ) : offers.length === 0 ? (
+        <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center text-slate-500">
+          <Tag className="mx-auto mb-3 h-6 w-6 text-slate-400" />
+          Fresh offers will appear here soon.
+        </div>
+      ) : (
+        <>
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {offers.map((product) => (
+              <OfferProductCard key={product.id} product={product} />
+            ))}
+          </div>
+          <div className="text-center">
+            <Link to="/offers">
+              <Button className="rounded-full bg-teal-600 px-6 text-sm font-semibold text-white hover:bg-teal-700">
+                View all offers
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
+          </div>
+        </>
+      )}
+    </section>
+  );
+}
 
 export default function HomePage() {
   return (
-    <div className="bg-gray-50 min-h-screen">
+    <div className="bg-white text-slate-900">
       <Header />
-      
-      <main className="container mx-auto px-4 py-8">
-        {/* Hero Section */}
-        <section className="text-center mb-12">
-          <h1 className="text-3xl md:text-5xl font-bold text-gray-800 mb-4">Welcome to Agni Online Store</h1>
-          <p className="text-lg md:text-xl text-gray-600 mb-8">
-            Your one-stop shop for everything you need.
-          </p>
-          <div className="flex justify-center mb-12">
-            <Search />
-          </div>
-        </section>
-
-        {/* Hero Banner */}
-        <HeroBanner />
-
-        {/* Offer Banners */}
-        <OfferBanners />
-
-        {/* Categories Section */}
+      <main className="mx-auto w-full max-w-[96rem] px-6 pb-20 pt-6 md:px-10 md:pt-8 lg:px-16">
+        <HeroSection />
+        <div className="h-10" />
+        <ServiceHighlights />
         <ShopByCategory />
-
-        {/* Features */}
-        <Features />
-
-        {/* Trending Products */}
-        <section className="mb-12">
-          <div className="flex flex-col md:flex-row items-center justify-between mb-8">
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-800 flex items-center mb-4 md:mb-0">
-              <TrendingUp className="w-8 h-8 text-green-500 mr-3" />
-              Trending Products
-            </h2>
-            <Button variant="link" className="text-blue-600 hover:text-blue-700 font-semibold">
-              View All
-              <ArrowRight className="w-4 h-4 ml-1" />
-            </Button>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {featuredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
-        </section>
-
+        <HotOffers />
       </main>
-
-      {/* Footer */}
       <Footer />
     </div>
   );

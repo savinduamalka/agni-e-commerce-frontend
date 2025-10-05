@@ -1,63 +1,121 @@
-import { HelpCircle, LogIn } from 'lucide-react';
-import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { HelpCircle, LogIn, ShoppingBag } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Link, useLocation } from 'react-router-dom';
 import {
   NavigationMenu,
   NavigationMenuItem,
   NavigationMenuList,
-  navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu";
-import { UserNav } from "@/components/shared/user-nav";
-import ModernMobileSidebar from "@/components/shared/ModernMobileSidebar";
-import { useAuth } from "@/context/AuthContext";
-import logo from "@/assets/logo.png";
-import CartIcon from "../cart/CartIcon";
+} from '@/components/ui/navigation-menu';
+import { UserNav } from '@/components/shared/user-nav';
+import ModernMobileSidebar from '@/components/shared/ModernMobileSidebar';
+import { useAuth } from '@/context/AuthContext';
+import logo from '@/assets/logo.png';
+import CartIcon from '../cart/CartIcon';
 
 export default function Header() {
   const { isAuthenticated } = useAuth();
+  const location = useLocation();
+
+  const isActive = (path: string) => {
+    return location.pathname === path;
+  };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-14 max-w-screen-2xl items-center justify-between px-4">
-        <div className="flex items-center space-x-2 sm:space-x-4 flex-1 min-w-0">
+    <header className="sticky top-0 z-50 w-full border-b bg-white shadow-sm">
+      <div className="container flex h-16 max-w-screen-2xl items-center justify-between px-4">
+        <div className="flex items-center space-x-2 sm:space-x-6 flex-1 min-w-0">
           {/* Mobile Menu */}
           <ModernMobileSidebar />
 
           {/* Logo/Brand */}
-          <Link to="/" className="flex items-center space-x-2 min-w-0">
-            <img src={logo} alt="Agni" className="h-6 sm:h-8 w-auto flex-shrink-0" />
-            <span className="text-lg sm:text-xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-red-600 via-orange-500 to-yellow-400 hidden sm:block truncate">
-              Agni Online Store
-            </span>
+          <Link
+            to="/"
+            className="flex items-center space-x-2 sm:space-x-3 min-w-0"
+          >
+            <img
+              src={logo}
+              alt="Agni"
+              className="h-8 sm:h-10 w-auto flex-shrink-0"
+            />
+            <div className="hidden sm:block min-w-0">
+              <span className="flex items-center gap-2 rounded-full border border-slate-200 bg-white/90 px-4 py-1 text-sm font-semibold text-slate-800 shadow-sm">
+                <span className="h-2 w-2 rounded-full bg-[var(--color-teal-500)]" />
+                Agni Online Store
+              </span>
+              <span className="mt-1 block text-[11px] font-medium uppercase tracking-[0.35em] text-slate-400">
+                Curated essentials
+              </span>
+            </div>
           </Link>
         </div>
 
         {/* Desktop Navigation */}
-        <div className="hidden md:flex">
+        <div className="hidden lg:flex">
           <NavigationMenu>
-            <NavigationMenuList className="space-x-4">
+            <NavigationMenuList className="space-x-1">
               <NavigationMenuItem>
-                <Link to="/" className={navigationMenuTriggerStyle()}>
+                <Link
+                  to="/"
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors
+                    ${
+                      isActive('/')
+                        ? 'bg-[var(--color-teal-500)] text-white'
+                        : 'text-gray-700 hover:bg-gray-100 hover:text-[var(--color-teal-500)]'
+                    }`}
+                >
+                  <ShoppingBag className="h-4 w-4 inline mr-2" />
                   Home
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <Link to="/categories" className={navigationMenuTriggerStyle()}>
+                <Link
+                  to="/categories"
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors
+                    ${
+                      isActive('/categories')
+                        ? 'bg-[var(--color-teal-500)] text-white'
+                        : 'text-gray-700 hover:bg-gray-100 hover:text-[var(--color-teal-500)]'
+                    }`}
+                >
                   Categories
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <Link to="/products" className={navigationMenuTriggerStyle()}>
+                <Link
+                  to="/products"
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors
+                    ${
+                      isActive('/products')
+                        ? 'bg-[var(--color-teal-500)] text-white'
+                        : 'text-gray-700 hover:bg-gray-100 hover:text-[var(--color-teal-500)]'
+                    }`}
+                >
                   Products
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <Link to="/offers" className={navigationMenuTriggerStyle()}>
+                <Link
+                  to="/offers"
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors
+                    ${
+                      isActive('/offers')
+                        ? 'bg-[var(--color-teal-500)] text-white'
+                        : 'text-gray-700 hover:bg-gray-100 hover:text-[var(--color-teal-500)]'
+                    }`}
+                >
                   Offers
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <Link to="/contact" className={navigationMenuTriggerStyle()}>
+                <Link
+                  to="/contact"
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors
+                    ${
+                      isActive('/contact')
+                        ? 'bg-[var(--color-teal-500)] text-white'
+                        : 'text-gray-700 hover:bg-gray-100 hover:text-[var(--color-teal-500)]'
+                    }`}
+                >
                   Contact
                 </Link>
               </NavigationMenuItem>
@@ -66,11 +124,15 @@ export default function Header() {
         </div>
 
         {/* User Actions */}
-        <div className="flex items-center space-x-2 sm:space-x-4 flex-shrink-0">
-          <nav className="flex items-center space-x-2 sm:space-x-4">
-            <Link to="/help" className="hidden sm:block">
-              <Button variant="ghost" size="icon">
-                <HelpCircle className="h-4 w-4" />
+        <div className="flex items-center space-x-2 sm:space-x-3 flex-shrink-0">
+          <nav className="flex items-center space-x-2 sm:space-x-3">
+            <Link to="/help" className="hidden lg:block">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="hover:bg-gray-100 hover:text-[var(--color-teal-500)]"
+              >
+                <HelpCircle className="h-5 w-5" />
               </Button>
             </Link>
             <div className="hidden sm:block">
@@ -79,26 +141,22 @@ export default function Header() {
             <div className="hidden sm:block">
               <CartIcon />
             </div>
-            {/* Mobile Actions - visible only on mobile */}
-            <div className="flex items-center space-x-1.5 sm:hidden">
+            {/* Mobile Actions */}
+            <div className="flex items-center space-x-2 sm:hidden">
               <CartIcon />
               {!isAuthenticated && (
-                <Button 
-                  asChild 
-                  size="sm" 
-                  className="bg-black hover:bg-gray-800 text-white border-0 shadow-md text-xs px-2 py-1 h-7 min-w-0 transition-colors"
+                <Button
+                  asChild
+                  size="sm"
+                  className="bg-[var(--color-teal-500)] hover:bg-[var(--color-teal-600)] text-white"
                 >
-                  <Link to="/signIn" className="flex items-center space-x-1">
-                    <LogIn className="h-3 w-3 flex-shrink-0" />
-                    <span className="text-xs">Login</span>
+                  <Link to="/signIn" className="flex items-center space-x-1.5">
+                    <LogIn className="h-3.5 w-3.5" />
+                    <span>Login</span>
                   </Link>
                 </Button>
               )}
-              {isAuthenticated && (
-                <div className="scale-75">
-                  <UserNav />
-                </div>
-              )}
+              {isAuthenticated && <UserNav />}
             </div>
           </nav>
         </div>
