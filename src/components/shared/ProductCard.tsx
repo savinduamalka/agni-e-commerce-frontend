@@ -64,11 +64,11 @@ export const ProductCard = ({ product }: ProductCardProps) => {
       : product.price;
 
   return (
-    <Card className="group overflow-hidden border-2 border-gray-100 hover:border-teal-500 transition-all duration-300 hover:shadow-xl">
+    <Card className="group overflow-hidden rounded-3xl border border-slate-200 bg-white transition-all duration-300 hover:-translate-y-1 hover:border-teal-500 hover:shadow-xl">
       {/* Image Section with Overlay Actions */}
-      <CardHeader className="p-0 relative overflow-hidden">
-        <Link to={`/products/${product.id}`} className="block relative">
-          <div className="aspect-square overflow-hidden bg-gray-100">
+      <CardHeader className="relative overflow-hidden p-0">
+        <Link to={`/products/${product.id}`} className="relative block">
+          <div className="aspect-square overflow-hidden bg-slate-100">
             <img
               src={
                 imageError
@@ -77,7 +77,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
               }
               alt={product.name}
               onError={() => setImageError(true)}
-              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.08]"
               loading="lazy"
             />
           </div>
@@ -86,11 +86,11 @@ export const ProductCard = ({ product }: ProductCardProps) => {
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
           {/* Quick View Button - Shows on hover */}
-          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100">
             <Button
               variant="secondary"
               size="sm"
-              className="bg-white/90 backdrop-blur-sm hover:bg-white font-semibold"
+              className="rounded-full bg-white/90 px-4 py-2 font-semibold text-xs uppercase tracking-wide shadow-sm backdrop-blur-sm hover:bg-white"
             >
               <Eye className="h-4 w-4 mr-2" />
               Quick View
@@ -99,24 +99,27 @@ export const ProductCard = ({ product }: ProductCardProps) => {
         </Link>
 
         {/* Top Badges */}
-        <div className="absolute top-3 left-3 flex flex-col gap-2">
+        <div className="absolute left-3 top-3 flex flex-col gap-1.5">
           {product.isHot && (
-            <Badge className="bg-red-500 text-white font-semibold shadow-md">
+            <Badge className="bg-red-500 text-[11px] font-semibold text-white shadow-md">
               🔥 Hot
             </Badge>
           )}
           {product.isOffer && discountPercent > 0 && (
-            <Badge className="bg-teal-500 text-white font-semibold shadow-md">
+            <Badge className="bg-teal-500 text-[11px] font-semibold text-white shadow-md">
               {discountPercent}% OFF
             </Badge>
           )}
           {product.stock === 0 && (
-            <Badge variant="destructive" className="font-semibold shadow-md">
+            <Badge
+              variant="destructive"
+              className="text-[11px] font-semibold shadow-md"
+            >
               Sold Out
             </Badge>
           )}
           {product.stock > 0 && product.stock <= 5 && (
-            <Badge className="bg-orange-500 text-white font-semibold shadow-md">
+            <Badge className="bg-orange-500 text-[11px] font-semibold text-white shadow-md">
               Only {product.stock} left
             </Badge>
           )}
@@ -125,7 +128,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
         {/* Wishlist Button */}
         <button
           onClick={handleWishlist}
-          className="absolute top-3 right-3 w-10 h-10 rounded-full bg-white/90 backdrop-blur-sm hover:bg-white shadow-md flex items-center justify-center transition-all duration-200 hover:scale-110"
+          className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-slate-600 shadow-md transition-all duration-200 hover:scale-110 hover:bg-white"
           aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
         >
           <Heart
@@ -137,28 +140,28 @@ export const ProductCard = ({ product }: ProductCardProps) => {
       </CardHeader>
 
       {/* Product Info */}
-      <CardContent className="p-4">
+      <CardContent className="space-y-3 p-3 sm:p-4">
         {/* Brand */}
         {product.brand && (
-          <p className="text-xs font-medium text-teal-600 uppercase tracking-wide mb-1">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-teal-600">
             {product.brand}
           </p>
         )}
 
         {/* Product Name */}
         <Link to={`/products/${product.id}`}>
-          <h3 className="text-base font-semibold text-gray-900 mb-2 line-clamp-2 hover:text-teal-600 transition-colors min-h-[3rem]">
+          <h3 className="min-h-[2.5rem] text-sm font-semibold text-slate-900 transition-colors hover:text-teal-600 sm:min-h-[3rem] sm:text-base">
             {product.name}
           </h3>
         </Link>
 
         {/* Rating */}
-        <div className="flex items-center gap-2 mb-3">
-          <div className="flex items-center gap-1">
+        <div className="flex items-center gap-2 text-xs text-slate-500 sm:text-sm">
+          <div className="flex items-center gap-0.5 text-teal-500">
             {Array.from({ length: 5 }).map((_, i) => (
               <Star
                 key={i}
-                className={`h-4 w-4 ${
+                className={`h-3.5 w-3.5 sm:h-4 sm:w-4 ${
                   i < Math.floor(product.averageRating)
                     ? 'fill-yellow-400 text-yellow-400'
                     : 'text-gray-300'
@@ -166,25 +169,25 @@ export const ProductCard = ({ product }: ProductCardProps) => {
               />
             ))}
           </div>
-          <span className="text-sm text-gray-600">
+          <span>
             {product.averageRating > 0
               ? product.averageRating.toFixed(1)
               : 'No reviews'}
           </span>
           {product.totalReviews > 0 && (
-            <span className="text-xs text-gray-400">
+            <span className="text-[11px] text-gray-400">
               ({product.totalReviews})
             </span>
           )}
         </div>
 
         {/* Price */}
-        <div className="flex items-center gap-2 mb-3">
-          <span className="text-2xl font-bold text-gray-900">
+        <div className="flex items-center gap-2">
+          <span className="text-xl font-bold text-slate-900 sm:text-2xl">
             ${displayPrice.toFixed(2)}
           </span>
           {discountPercent > 0 && (
-            <span className="text-sm text-gray-400 line-through">
+            <span className="text-xs text-gray-400 line-through sm:text-sm">
               ${product.price.toFixed(2)}
             </span>
           )}
@@ -192,31 +195,37 @@ export const ProductCard = ({ product }: ProductCardProps) => {
 
         {/* Stock Status */}
         {product.stock > 0 ? (
-          <Badge variant="outline" className="border-green-500 text-green-700">
+          <Badge
+            variant="outline"
+            className="border-green-500 text-[11px] font-semibold uppercase tracking-wide text-green-600"
+          >
             ✓ In Stock
           </Badge>
         ) : (
-          <Badge variant="outline" className="border-red-500 text-red-700">
+          <Badge
+            variant="outline"
+            className="border-red-500 text-[11px] font-semibold uppercase tracking-wide text-red-600"
+          >
             Out of Stock
           </Badge>
         )}
       </CardContent>
 
       {/* Action Buttons */}
-      <CardFooter className="p-4 pt-0 gap-2">
+      <CardFooter className="flex flex-col gap-2 border-t border-slate-100 p-3 pt-3 sm:flex-row sm:items-center sm:gap-3 sm:p-4">
         <Button
           onClick={handleAddToCart}
           disabled={product.stock === 0 || isAddingToCart}
-          className="flex-1 bg-teal-500 hover:bg-teal-600 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="h-11 w-full flex-1 rounded-full bg-teal-500 text-sm font-semibold text-white shadow-md transition-all duration-200 hover:bg-teal-600 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50 sm:h-11"
         >
           {isAddingToCart ? (
             <>
-              <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2" />
+              <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
               Adding...
             </>
           ) : (
             <>
-              <ShoppingCart className="h-4 w-4 mr-2" />
+              <ShoppingCart className="mr-2 h-4 w-4" />
               Add to Cart
             </>
           )}
@@ -224,7 +233,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
         <Button
           asChild
           variant="outline"
-          className="border-2 hover:border-teal-500 hover:text-teal-600 transition-colors"
+          className="h-11 w-full rounded-full border border-slate-200 text-sm font-semibold transition-colors hover:border-teal-500 hover:text-teal-600 sm:w-auto"
         >
           <Link to={`/products/${product.id}`}>
             <Eye className="h-4 w-4" />

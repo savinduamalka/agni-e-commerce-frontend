@@ -146,14 +146,14 @@ export const ProductFilters = ({ onClose }: ProductFiltersProps) => {
   const activeCount = getActiveFiltersCount();
 
   return (
-    <Card className="border-2 border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-      <CardHeader className="pb-4">
+    <Card className="rounded-[2rem] border border-slate-200 bg-white shadow-none">
+      <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg font-bold flex items-center gap-2">
+          <CardTitle className="flex items-center gap-2 text-base font-semibold text-slate-900">
             <Tag className="h-5 w-5 text-teal-500" />
             Filters
             {activeCount > 0 && (
-              <Badge className="bg-teal-500 text-white ml-2">
+              <Badge className="ml-2 rounded-full bg-teal-500 px-2.5 py-[3px] text-[11px] font-semibold uppercase tracking-wide text-white">
                 {activeCount}
               </Badge>
             )}
@@ -163,7 +163,7 @@ export const ProductFilters = ({ onClose }: ProductFiltersProps) => {
               variant="ghost"
               size="sm"
               onClick={clearAllFilters}
-              className="text-red-500 hover:text-red-600 hover:bg-red-50 -mr-2"
+              className="-mr-2 text-xs font-semibold text-red-500 hover:bg-red-50 hover:text-red-600"
             >
               <RotateCcw className="h-4 w-4 mr-1" />
               Clear
@@ -172,15 +172,15 @@ export const ProductFilters = ({ onClose }: ProductFiltersProps) => {
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-5">
         {/* Brand Filter */}
         <div>
           <button
             onClick={() => toggleSection('brand')}
-            className="w-full flex items-center justify-between py-2 hover:text-teal-500 transition-colors"
+            className="flex w-full items-center justify-between py-2 text-sm font-semibold uppercase tracking-wide text-slate-700 transition-colors hover:text-teal-500"
             aria-expanded={expandedSections.brand}
           >
-            <span className="font-semibold text-sm uppercase tracking-wide flex items-center gap-2">
+            <span className="flex items-center gap-2">
               <Tag className="h-4 w-4" />
               Brand
             </span>
@@ -198,7 +198,7 @@ export const ProductFilters = ({ onClose }: ProductFiltersProps) => {
                 placeholder="e.g., Nike, Apple, Samsung"
                 value={brand}
                 onChange={(e) => setBrand(e.target.value)}
-                className="border-2 focus:border-teal-500 transition-colors"
+                className="rounded-xl border border-slate-200 text-sm transition-colors focus:border-teal-500"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
                     applyFilters();
@@ -210,7 +210,7 @@ export const ProductFilters = ({ onClose }: ProductFiltersProps) => {
                   variant="ghost"
                   size="sm"
                   onClick={() => setBrand('')}
-                  className="text-xs text-gray-500 hover:text-red-500 -ml-2"
+                  className="-ml-2 text-xs text-slate-400 transition-colors hover:text-red-500"
                 >
                   <X className="h-3 w-3 mr-1" />
                   Clear brand
@@ -220,16 +220,16 @@ export const ProductFilters = ({ onClose }: ProductFiltersProps) => {
           )}
         </div>
 
-        <Separator />
+        <Separator className="border-slate-100" />
 
         {/* Price Range Filter */}
         <div>
           <button
             onClick={() => toggleSection('price')}
-            className="w-full flex items-center justify-between py-2 hover:text-teal-500 transition-colors"
+            className="flex w-full items-center justify-between py-2 text-sm font-semibold uppercase tracking-wide text-slate-700 transition-colors hover:text-teal-500"
             aria-expanded={expandedSections.price}
           >
-            <span className="font-semibold text-sm uppercase tracking-wide flex items-center gap-2">
+            <span className="flex items-center gap-2">
               <DollarSign className="h-4 w-4" />
               Price Range
             </span>
@@ -246,7 +246,7 @@ export const ProductFilters = ({ onClose }: ProductFiltersProps) => {
                 <div>
                   <label
                     htmlFor="minPrice"
-                    className="text-xs text-gray-500 mb-1 block"
+                    className="mb-1 block text-xs font-medium text-slate-500"
                   >
                     Min ($)
                   </label>
@@ -256,7 +256,7 @@ export const ProductFilters = ({ onClose }: ProductFiltersProps) => {
                     placeholder="0"
                     value={minPrice}
                     onChange={(e) => setMinPrice(e.target.value)}
-                    className="border-2 focus:border-teal-500 transition-colors"
+                    className="rounded-xl border border-slate-200 text-sm transition-colors focus:border-teal-500"
                     min="0"
                     onKeyDown={(e) => {
                       if (e.key === 'Enter') {
@@ -268,7 +268,7 @@ export const ProductFilters = ({ onClose }: ProductFiltersProps) => {
                 <div>
                   <label
                     htmlFor="maxPrice"
-                    className="text-xs text-gray-500 mb-1 block"
+                    className="mb-1 block text-xs font-medium text-slate-500"
                   >
                     Max ($)
                   </label>
@@ -278,7 +278,7 @@ export const ProductFilters = ({ onClose }: ProductFiltersProps) => {
                     placeholder="Any"
                     value={maxPrice}
                     onChange={(e) => setMaxPrice(e.target.value)}
-                    className="border-2 focus:border-teal-500 transition-colors"
+                    className="rounded-xl border border-slate-200 text-sm transition-colors focus:border-teal-500"
                     min="0"
                     onKeyDown={(e) => {
                       if (e.key === 'Enter') {
@@ -289,8 +289,8 @@ export const ProductFilters = ({ onClose }: ProductFiltersProps) => {
                 </div>
               </div>
               {(minPrice || maxPrice) && (
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-gray-500">
+                <div className="flex items-center justify-between text-xs text-slate-500">
+                  <span>
                     Range: ${minPrice || '0'} - ${maxPrice || '∞'}
                   </span>
                   <Button
@@ -300,7 +300,7 @@ export const ProductFilters = ({ onClose }: ProductFiltersProps) => {
                       setMinPrice('');
                       setMaxPrice('');
                     }}
-                    className="text-xs text-gray-500 hover:text-red-500 h-6 px-2"
+                    className="h-6 px-2 text-xs text-slate-400 transition-colors hover:text-red-500"
                   >
                     <X className="h-3 w-3" />
                   </Button>
@@ -310,16 +310,16 @@ export const ProductFilters = ({ onClose }: ProductFiltersProps) => {
           )}
         </div>
 
-        <Separator />
+        <Separator className="border-slate-100" />
 
         {/* Rating Filter */}
         <div>
           <button
             onClick={() => toggleSection('rating')}
-            className="w-full flex items-center justify-between py-2 hover:text-teal-500 transition-colors"
+            className="flex w-full items-center justify-between py-2 text-sm font-semibold uppercase tracking-wide text-slate-700 transition-colors hover:text-teal-500"
             aria-expanded={expandedSections.rating}
           >
-            <span className="font-semibold text-sm uppercase tracking-wide flex items-center gap-2">
+            <span className="flex items-center gap-2">
               <Star className="h-4 w-4" />
               Rating
             </span>
@@ -338,10 +338,10 @@ export const ProductFilters = ({ onClose }: ProductFiltersProps) => {
                   onClick={() =>
                     setSelectedRating(rating === selectedRating ? null : rating)
                   }
-                  className={`w-full flex items-center gap-2 p-2 rounded-lg border-2 transition-all ${
+                  className={`flex w-full items-center gap-2 rounded-xl border border-slate-200 p-2.5 text-sm transition-all ${
                     selectedRating === rating
                       ? 'border-teal-500 bg-teal-50'
-                      : 'border-gray-200 hover:border-gray-300'
+                      : 'hover:border-teal-200 hover:bg-teal-50/60'
                   }`}
                   aria-pressed={selectedRating === rating}
                 >
@@ -357,7 +357,7 @@ export const ProductFilters = ({ onClose }: ProductFiltersProps) => {
                       />
                     ))}
                   </div>
-                  <span className="text-sm font-medium">& Up</span>
+                  <span className="font-medium">& Up</span>
                 </button>
               ))}
               {selectedRating !== null && (
@@ -365,7 +365,7 @@ export const ProductFilters = ({ onClose }: ProductFiltersProps) => {
                   variant="ghost"
                   size="sm"
                   onClick={() => setSelectedRating(null)}
-                  className="text-xs text-gray-500 hover:text-red-500 w-full"
+                  className="w-full text-xs text-slate-400 transition-colors hover:text-red-500"
                 >
                   <X className="h-3 w-3 mr-1" />
                   Clear rating
@@ -375,12 +375,12 @@ export const ProductFilters = ({ onClose }: ProductFiltersProps) => {
           )}
         </div>
 
-        <Separator />
+        <Separator className="border-slate-100" />
 
         {/* Apply Filters Button */}
         <Button
           onClick={applyFilters}
-          className="w-full bg-teal-500 hover:bg-teal-600 text-white font-semibold h-11 shadow-md hover:shadow-lg transition-all duration-200"
+          className="h-11 w-full rounded-full bg-teal-500 text-sm font-semibold text-white shadow-md transition-all duration-200 hover:bg-teal-600 hover:shadow-lg"
         >
           Apply Filters
         </Button>

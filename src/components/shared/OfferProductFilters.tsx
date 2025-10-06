@@ -136,14 +136,14 @@ export const OfferProductFilters = ({ onClose }: OfferProductFiltersProps) => {
   };
 
   return (
-    <Card className="border-2 border-red-100 shadow-sm hover:shadow-md transition-shadow bg-gradient-to-br from-white to-red-50/30">
-      <CardHeader className="pb-4">
+    <Card className="rounded-[2rem] border border-red-100 bg-white shadow-none">
+      <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg font-bold flex items-center gap-2">
+          <CardTitle className="flex items-center gap-2 text-base font-semibold text-red-600">
             <Zap className="h-5 w-5 text-red-500" />
             Offer Filters
             {activeCount > 0 && (
-              <Badge className="bg-red-500 text-white ml-2">
+              <Badge className="ml-2 rounded-full bg-red-500 px-2.5 py-[3px] text-[11px] font-semibold uppercase tracking-wide text-white">
                 {activeCount}
               </Badge>
             )}
@@ -153,7 +153,7 @@ export const OfferProductFilters = ({ onClose }: OfferProductFiltersProps) => {
               variant="ghost"
               size="sm"
               onClick={clearAllFilters}
-              className="text-red-500 hover:text-red-600 hover:bg-red-50 -mr-2"
+              className="-mr-2 text-xs font-semibold text-red-500 hover:bg-red-50 hover:text-red-600"
             >
               <RotateCcw className="h-4 w-4 mr-1" />
               Clear
@@ -162,10 +162,10 @@ export const OfferProductFilters = ({ onClose }: OfferProductFiltersProps) => {
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-5">
         {/* Quick Presets */}
         <div>
-          <h3 className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+          <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-slate-700">
             <Zap className="h-4 w-4 text-red-500" />
             Quick Filters
           </h3>
@@ -174,7 +174,7 @@ export const OfferProductFilters = ({ onClose }: OfferProductFiltersProps) => {
               <button
                 key={preset.label}
                 onClick={() => applyPreset(preset.min, preset.max)}
-                className="px-3 py-2 text-xs font-semibold rounded-lg border-2 border-red-200 hover:border-red-500 hover:bg-red-50 transition-all text-gray-700 hover:text-red-600"
+                className="rounded-xl border border-red-200 px-3 py-2 text-xs font-semibold text-slate-700 transition-all hover:border-red-500 hover:bg-red-50 hover:text-red-600"
               >
                 {preset.label}
               </button>
@@ -182,16 +182,16 @@ export const OfferProductFilters = ({ onClose }: OfferProductFiltersProps) => {
           </div>
         </div>
 
-        <Separator />
+        <Separator className="border-red-100" />
 
         {/* Discount Range Filter */}
         <div>
           <button
             onClick={() => toggleSection('discount')}
-            className="w-full flex items-center justify-between py-2 hover:text-red-500 transition-colors"
+            className="flex w-full items-center justify-between py-2 text-sm font-semibold uppercase tracking-wide text-slate-700 transition-colors hover:text-red-500"
             aria-expanded={expandedSections.discount}
           >
-            <span className="font-semibold text-sm uppercase tracking-wide flex items-center gap-2">
+            <span className="flex items-center gap-2">
               <Percent className="h-4 w-4" />
               Discount Range
             </span>
@@ -208,7 +208,7 @@ export const OfferProductFilters = ({ onClose }: OfferProductFiltersProps) => {
                 <div>
                   <label
                     htmlFor="minDiscount"
-                    className="text-xs text-gray-500 mb-1 block"
+                    className="mb-1 block text-xs font-medium text-slate-500"
                   >
                     Min (%)
                   </label>
@@ -218,7 +218,7 @@ export const OfferProductFilters = ({ onClose }: OfferProductFiltersProps) => {
                     placeholder="0"
                     value={minDiscount}
                     onChange={(e) => setMinDiscount(e.target.value)}
-                    className="border-2 focus:border-red-500 transition-colors"
+                    className="rounded-xl border border-red-100 text-sm transition-colors focus:border-red-500"
                     min="0"
                     max="100"
                     onKeyDown={(e) => {
@@ -231,7 +231,7 @@ export const OfferProductFilters = ({ onClose }: OfferProductFiltersProps) => {
                 <div>
                   <label
                     htmlFor="maxDiscount"
-                    className="text-xs text-gray-500 mb-1 block"
+                    className="mb-1 block text-xs font-medium text-slate-500"
                   >
                     Max (%)
                   </label>
@@ -241,7 +241,7 @@ export const OfferProductFilters = ({ onClose }: OfferProductFiltersProps) => {
                     placeholder="100"
                     value={maxDiscount}
                     onChange={(e) => setMaxDiscount(e.target.value)}
-                    className="border-2 focus:border-red-500 transition-colors"
+                    className="rounded-xl border border-red-100 text-sm transition-colors focus:border-red-500"
                     min="0"
                     max="100"
                     onKeyDown={(e) => {
@@ -253,8 +253,8 @@ export const OfferProductFilters = ({ onClose }: OfferProductFiltersProps) => {
                 </div>
               </div>
               {(minDiscount || maxDiscount) && (
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-gray-500">
+                <div className="flex items-center justify-between text-xs text-slate-500">
+                  <span>
                     Discount: {minDiscount || '0'}% - {maxDiscount || '100'}%
                   </span>
                   <Button
@@ -264,7 +264,7 @@ export const OfferProductFilters = ({ onClose }: OfferProductFiltersProps) => {
                       setMinDiscount('');
                       setMaxDiscount('');
                     }}
-                    className="text-xs text-gray-500 hover:text-red-500 h-6 px-2"
+                    className="h-6 px-2 text-xs text-slate-400 transition-colors hover:text-red-500"
                   >
                     <X className="h-3 w-3" />
                   </Button>
@@ -274,17 +274,17 @@ export const OfferProductFilters = ({ onClose }: OfferProductFiltersProps) => {
           )}
         </div>
 
-        <Separator />
+        <Separator className="border-red-100" />
 
         {/* Info Box */}
-        <div className="bg-red-50 border-2 border-red-200 rounded-lg p-4">
+        <div className="rounded-2xl border border-red-100 bg-red-50/60 p-4">
           <div className="flex items-start gap-2">
-            <Zap className="h-5 w-5 text-red-500 flex-shrink-0 mt-0.5" />
+            <Zap className="mt-0.5 h-5 w-5 flex-shrink-0 text-red-500" />
             <div>
-              <h4 className="text-sm font-semibold text-red-900 mb-1">
+              <h4 className="mb-1 text-sm font-semibold text-red-600">
                 Hot Deals Alert! 🔥
               </h4>
-              <p className="text-xs text-red-700">
+              <p className="text-xs text-red-500">
                 Filter by discount percentage to find the best offers. Higher
                 discounts mean bigger savings!
               </p>
@@ -295,7 +295,7 @@ export const OfferProductFilters = ({ onClose }: OfferProductFiltersProps) => {
         {/* Apply Filters Button */}
         <Button
           onClick={applyFilters}
-          className="w-full bg-red-500 hover:bg-red-600 text-white font-semibold h-11 shadow-md hover:shadow-lg transition-all duration-200"
+          className="h-11 w-full rounded-full bg-red-500 text-sm font-semibold text-white shadow-md transition-all duration-200 hover:bg-red-600 hover:shadow-lg"
         >
           <Zap className="h-4 w-4 mr-2" />
           Apply Filters

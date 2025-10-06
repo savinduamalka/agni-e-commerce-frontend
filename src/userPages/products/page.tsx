@@ -268,16 +268,20 @@ const ProductsPage = () => {
               </SheetTrigger>
               <SheetContent
                 side="left"
-                className="w-full sm:w-[400px] overflow-y-auto"
+                className="w-[88vw] max-h-[90vh] max-w-sm overflow-hidden rounded-r-[2.5rem] border-none bg-white p-0 shadow-2xl sm:w-[360px]"
               >
-                <SheetHeader>
-                  <SheetTitle className="text-xl font-bold flex items-center gap-2">
-                    <Filter className="h-5 w-5" />
-                    Filter Products
-                  </SheetTitle>
-                </SheetHeader>
-                <Separator className="my-4" />
-                <ProductFilters onClose={() => setIsFilterOpen(false)} />
+                <div className="flex h-full flex-col">
+                  <SheetHeader className="px-6 pt-6">
+                    <SheetTitle className="flex items-center gap-2 text-lg font-semibold text-slate-900">
+                      <Filter className="h-5 w-5 text-teal-500" />
+                      Filter Products
+                    </SheetTitle>
+                  </SheetHeader>
+                  <Separator className="mt-4 border-slate-100" />
+                  <div className="flex-1 overflow-y-auto px-6 pb-6">
+                    <ProductFilters onClose={() => setIsFilterOpen(false)} />
+                  </div>
+                </div>
               </SheetContent>
             </Sheet>
 
@@ -325,14 +329,16 @@ const ProductsPage = () => {
             </Select>
 
             {/* View Toggle */}
-            <div className="hidden sm:flex items-center gap-1 border-2 border-gray-200 rounded-lg p-1">
+            <div className="flex items-center gap-1 rounded-full border border-slate-200 bg-white/80 p-1 shadow-sm backdrop-blur sm:gap-2">
               <Button
                 variant={view === 'grid' ? 'default' : 'ghost'}
                 size="icon"
                 onClick={() => setView('grid')}
-                className={
-                  view === 'grid' ? 'bg-teal-500 hover:bg-teal-600' : ''
-                }
+                className={`h-9 w-9 rounded-full text-slate-500 transition-colors ${
+                  view === 'grid'
+                    ? 'bg-teal-500 text-white hover:bg-teal-600'
+                    : 'hover:text-teal-600'
+                }`}
                 aria-label="Grid view"
               >
                 <LayoutGrid className="h-4 w-4" />
@@ -341,9 +347,11 @@ const ProductsPage = () => {
                 variant={view === 'list' ? 'default' : 'ghost'}
                 size="icon"
                 onClick={() => setView('list')}
-                className={
-                  view === 'list' ? 'bg-teal-500 hover:bg-teal-600' : ''
-                }
+                className={`h-9 w-9 rounded-full text-slate-500 transition-colors ${
+                  view === 'list'
+                    ? 'bg-teal-500 text-white hover:bg-teal-600'
+                    : 'hover:text-teal-600'
+                }`}
                 aria-label="List view"
               >
                 <List className="h-4 w-4" />
