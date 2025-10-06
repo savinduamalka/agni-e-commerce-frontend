@@ -268,7 +268,58 @@ const ProductDetailPage = () => {
     );
   }
 
-  const productUrl = window.location.href;
+  const productUrl = typeof window !== 'undefined' ? window.location.href : '';
+  const shareTitle = `${product.name} • Agni Online Store`;
+  const formattedPrice = `$${product.price.toFixed(2)}`;
+  const savingsLine =
+    discountPercentage > 0
+      ? `Now ${formattedPrice} (${discountPercentage}% off the original price).`
+      : `Only ${formattedPrice} right now.`;
+  const shareMessage = `${product.name}: ${savingsLine}`;
+  const shareFooter = 'Free delivery on orders $50+ and easy 30-day returns.';
+  const shareBody = `${shareMessage}\n${shareFooter}\n\nShop now: ${productUrl}`;
+  const shareData = {
+    title: shareTitle,
+    text: `${shareMessage} ${shareFooter}`,
+    url: productUrl,
+  };
+  const facebookShareProps = {
+    quote: `${shareMessage} ${shareFooter}`,
+    hashtag: '#AgniOnlineStore',
+  };
+  const canUseWebShare =
+    typeof navigator !== 'undefined' && typeof navigator.share === 'function';
+
+  const handleSmartShare = async () => {
+    try {
+      if (canUseWebShare) {
+        await navigator.share(shareData);
+        toast.success('Shared using your device options');
+      } else if (typeof navigator !== 'undefined' && navigator.clipboard) {
+        await navigator.clipboard.writeText(shareBody);
+        toast.success('Sharable product details copied!');
+      }
+    } catch (error) {
+      const isAbort =
+        error instanceof DOMException && error.name === 'AbortError';
+      if (!isAbort) {
+        console.error('Product share failed', error);
+        toast.error('We could not share the product. Please try again.');
+      }
+    }
+  };
+
+  const handleCopyShareInfo = async () => {
+    try {
+      if (typeof navigator !== 'undefined' && navigator.clipboard) {
+        await navigator.clipboard.writeText(shareBody);
+        toast.success('Sharable product details copied!');
+      }
+    } catch (error) {
+      console.error('Copy share details failed', error);
+      toast.error('Unable to copy right now. Please try again.');
+    }
+  };
 
   return (
     <>
@@ -567,33 +618,45 @@ const ProductDetailPage = () => {
                       Share this product
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-auto">
-                    <div className="flex gap-2 p-2">
-                      <FacebookShareButton
-                        url={productUrl}
-                        title={product.name}
-                      >
-                        <FacebookIcon size={40} round />
-                      </FacebookShareButton>
-                      <EmailShareButton url={productUrl} subject={product.name}>
-                        <EmailIcon size={40} round />
-                      </EmailShareButton>
-                      <WhatsappShareButton
-                        url={productUrl}
-                        title={product.name}
-                      >
-                        <WhatsappIcon size={40} round />
-                      </WhatsappShareButton>
+                  <PopoverContent className="w-[280px] rounded-3xl border border-slate-200 p-4 shadow-lg">
+                    <div className="space-y-3">
+                      <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+                        Share via
+                      </p>
+                      <div className="flex items-center justify-between gap-2">
+                        <FacebookShareButton
+                          url={productUrl}
+                          {...(facebookShareProps as any)}
+                        >
+                          <FacebookIcon size={44} round />
+                        </FacebookShareButton>
+                        <WhatsappShareButton
+                          url={productUrl}
+                          title={`${shareMessage}\n${shareFooter}`}
+                          separator="\n"
+                        >
+                          <WhatsappIcon size={44} round />
+                        </WhatsappShareButton>
+                        <EmailShareButton
+                          url={productUrl}
+                          subject={shareTitle}
+                          body={shareBody}
+                        >
+                          <EmailIcon size={44} round />
+                        </EmailShareButton>
+                      </div>
                       <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => {
-                          navigator.clipboard.writeText(productUrl);
-                          toast.success('Link copied to clipboard!');
-                        }}
-                        className="h-10 w-10"
+                        onClick={handleSmartShare}
+                        className="w-full rounded-full bg-teal-500 text-sm font-semibold text-white hover:bg-teal-600"
                       >
-                        <LinkIcon className="h-5 w-5" />
+                        Share using device options
+                      </Button>
+                      <Button
+                        variant="outline"
+                        onClick={handleCopyShareInfo}
+                        className="w-full rounded-full border border-slate-200 text-sm font-semibold hover:border-teal-500 hover:text-teal-600"
+                      >
+                        <LinkIcon className="mr-2 h-4 w-4" /> Copy share message
                       </Button>
                     </div>
                   </PopoverContent>

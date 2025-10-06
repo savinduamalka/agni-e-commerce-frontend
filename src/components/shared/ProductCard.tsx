@@ -235,8 +235,11 @@ export const ProductCard = ({ product }: ProductCardProps) => {
           variant="outline"
           className="h-11 w-full rounded-full border border-slate-200 text-sm font-semibold transition-colors hover:border-teal-500 hover:text-teal-600 sm:w-auto"
         >
-          <Link to={`/products/${product.id}`}>
-            <Eye className="h-4 w-4" />
+          <Link
+            to={`/products/${product.id}`}
+            className="flex h-full w-full items-center justify-center"
+          >
+            View
           </Link>
         </Button>
       </CardFooter>
