@@ -8,6 +8,7 @@ import {
   Package,
   Tag,
   Mail,
+  Heart,
   ChevronRight,
   Sparkles,
 } from 'lucide-react';
@@ -31,6 +32,7 @@ export default function ModernMobileSidebar() {
     { name: 'Categories', href: '/categories', icon: Grid3X3 },
     { name: 'Products', href: '/products', icon: Package },
     { name: 'Offers', href: '/offers', icon: Tag, badge: 'New' },
+    { name: 'Wishlist', href: '/wishlist', icon: Heart },
     { name: 'Contact', href: '/contact', icon: Mail },
   ];
 

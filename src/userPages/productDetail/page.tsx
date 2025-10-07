@@ -48,6 +48,7 @@ import ProductReviews from '@/components/shared/ProductReviews';
 import Header from '@/components/shared/header';
 import Footer from '@/components/shared/footer';
 import { useCart } from '../../context/CartContext';
+import { useWishlist } from '@/context/WishlistContext';
 
 const getProductById = async (id: string): Promise<Product> => {
   const response = await fetch(
@@ -68,13 +69,13 @@ const ProductDetailPage = () => {
   const [selectedImage, setSelectedImage] = useState<string>('');
   const [currentIndex, setCurrentIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
-  const [isWishlisted, setIsWishlisted] = useState(false);
   const [showDetailsSection, setShowDetailsSection] = useState({
     description: true,
     specifications: false,
     shipping: false,
   });
   const { addToCart } = useCart();
+  const { toggleWishlist, isWishlisted } = useWishlist();
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -144,9 +145,11 @@ const ProductDetailPage = () => {
     }
   };
 
-  const toggleWishlist = () => {
-    setIsWishlisted(!isWishlisted);
-    toast.success(isWishlisted ? 'Removed from wishlist' : 'Added to wishlist');
+  const handleWishlistToggle = async () => {
+    if (!product) {
+      return;
+    }
+    await toggleWishlist(product);
   };
 
   const toggleSection = (section: keyof typeof showDetailsSection) => {
@@ -593,16 +596,16 @@ const ProductDetailPage = () => {
                   <Button
                     variant="outline"
                     size="icon"
-                    onClick={toggleWishlist}
+                    onClick={handleWishlistToggle}
                     className={`h-14 w-14 border-2 transition-all ${
-                      isWishlisted
+                      isWishlisted(product.id)
                         ? 'bg-red-50 border-red-200 text-red-600 hover:bg-red-100'
                         : 'hover:bg-gray-50 border-gray-200'
                     }`}
                   >
                     <Heart
                       className={`h-5 w-5 ${
-                        isWishlisted ? 'fill-current' : ''
+                        isWishlisted(product.id) ? 'fill-current' : ''
                       }`}
                     />
                   </Button>

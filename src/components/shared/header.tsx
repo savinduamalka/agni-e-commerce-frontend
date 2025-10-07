@@ -1,4 +1,4 @@
-import { HelpCircle, LogIn, ShoppingBag } from 'lucide-react';
+import { HelpCircle, Heart, LogIn, ShoppingBag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link, useLocation } from 'react-router-dom';
 import {
@@ -133,6 +133,16 @@ export default function Header() {
                 className="hover:bg-gray-100 hover:text-[var(--color-teal-500)]"
               >
                 <HelpCircle className="h-5 w-5" />
+              </Button>
+            </Link>
+            <Link to="/wishlist" className="hidden lg:block">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="hover:bg-gray-100 hover:text-[var(--color-teal-500)]"
+                aria-label="Wishlist"
+              >
+                <Heart className="h-5 w-5" />
               </Button>
             </Link>
             <div className="hidden sm:block">

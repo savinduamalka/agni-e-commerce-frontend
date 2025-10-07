@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from 'react-router-dom';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -6,14 +6,10 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { 
-  Avatar, 
-  AvatarFallback, 
-  AvatarImage 
-} from "@/components/ui/avatar";
-import { useAuth } from "@/context/AuthContext";
-import { Button } from "../ui/button";
+} from '@/components/ui/dropdown-menu';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useAuth } from '@/context/AuthContext';
+import { Button } from '../ui/button';
 
 export function UserNav() {
   const { isAuthenticated, user, logout, loading } = useAuth();
@@ -29,11 +25,7 @@ export function UserNav() {
   }
 
   if (!isAuthenticated) {
-    return (
-      <Button onClick={() => navigate('/signIn')}>
-        Sign In
-      </Button>
-    );
+    return <Button onClick={() => navigate('/signIn')}>Sign In</Button>;
   }
 
   return (
@@ -41,7 +33,9 @@ export function UserNav() {
       <DropdownMenuTrigger>
         <Avatar>
           <AvatarImage src={user?.avatarUrl} />
-          <AvatarFallback>{user?.name?.charAt(0) || user?.email?.charAt(0)}</AvatarFallback>
+          <AvatarFallback>
+            {user?.name?.charAt(0) || user?.email?.charAt(0)}
+          </AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
@@ -54,9 +48,11 @@ export function UserNav() {
           <Link to="/settings">Settings</Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={handleLogout}>
-          Log out
+        <DropdownMenuItem>
+          <Link to="/wishlist">Wishlist</Link>
         </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={handleLogout}>Log out</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

@@ -12,6 +12,7 @@ import { Link } from 'react-router-dom';
 import { ShoppingCart, Heart, Star, Eye } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { toast } from 'sonner';
+import { useWishlist } from '@/context/WishlistContext';
 
 interface ProductCardProps {
   product: Product;
@@ -20,8 +21,9 @@ interface ProductCardProps {
 export const ProductCard = ({ product }: ProductCardProps) => {
   const { addToCart } = useCart();
   const [isAddingToCart, setIsAddingToCart] = useState(false);
-  const [isWishlisted, setIsWishlisted] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const { toggleWishlist, isWishlisted } = useWishlist();
+  const wishlistActive = isWishlisted(product.id);
 
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -47,11 +49,10 @@ export const ProductCard = ({ product }: ProductCardProps) => {
     }
   };
 
-  const handleWishlist = (e: React.MouseEvent) => {
+  const handleWishlist = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setIsWishlisted(!isWishlisted);
-    toast.success(isWishlisted ? 'Removed from wishlist' : 'Added to wishlist');
+    await toggleWishlist(product);
   };
 
   // Calculate discount percentage if applicable
@@ -129,11 +130,13 @@ export const ProductCard = ({ product }: ProductCardProps) => {
         <button
           onClick={handleWishlist}
           className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-slate-600 shadow-md transition-all duration-200 hover:scale-110 hover:bg-white"
-          aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
+          aria-label={
+            wishlistActive ? 'Remove from wishlist' : 'Add to wishlist'
+          }
         >
           <Heart
             className={`h-5 w-5 transition-colors ${
-              isWishlisted ? 'fill-red-500 text-red-500' : 'text-gray-600'
+              wishlistActive ? 'fill-red-500 text-red-500' : 'text-gray-600'
             }`}
           />
         </button>
@@ -233,7 +236,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
         <Button
           asChild
           variant="outline"
-          className="h-11 w-full rounded-full border border-slate-200 text-sm font-semibold transition-colors hover:border-teal-500 hover:text-teal-600 sm:w-auto"
+          className="h-11 w-full flex-1 rounded-full border border-slate-200 text-sm font-semibold transition-colors hover:border-teal-500 hover:text-teal-600"
         >
           <Link
             to={`/products/${product.id}`}
