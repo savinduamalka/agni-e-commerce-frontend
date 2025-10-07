@@ -310,14 +310,17 @@ function OfferProductCard({ product }: { product: Product }) {
   const toggleWishlist = (event: React.MouseEvent) => {
     event.preventDefault();
     event.stopPropagation();
-    setIsWishlisted((prev) => !prev);
-    toast.success(isWishlisted ? 'Removed from wishlist' : 'Added to wishlist');
+    setIsWishlisted((prev) => {
+      const next = !prev;
+      toast.success(next ? 'Added to wishlist' : 'Removed from wishlist');
+      return next;
+    });
   };
 
   return (
-    <Link to={`/productDetail/${product.id}`}>
-      <Card className="group flex h-full flex-col overflow-hidden border border-slate-200 shadow-none transition-transform duration-300 hover:-translate-y-1 hover:border-teal-500 hover:shadow-md">
-        <div className="relative overflow-hidden bg-white">
+    <Card className="group flex h-full flex-col overflow-hidden border border-slate-200 shadow-none transition-transform duration-300 hover:-translate-y-1 hover:border-teal-500 hover:shadow-md">
+      <div className="relative overflow-hidden bg-white">
+        <Link to={`/products/${product.id}`} className="block">
           <div className="flex aspect-square items-center justify-center">
             <img
               src={primaryImage}
@@ -336,63 +339,67 @@ function OfferProductCard({ product }: { product: Product }) {
               </Badge>
             </div>
           )}
-          <div className="absolute right-3 top-3 opacity-0 transition-all duration-300 group-hover:opacity-100">
-            <Button
-              variant="secondary"
-              size="icon"
-              onClick={toggleWishlist}
-              className={`${
-                isWishlisted
-                  ? 'bg-teal-600 text-white hover:bg-teal-700'
-                  : 'bg-white text-slate-600 hover:bg-teal-50'
-              } rounded-full shadow-sm`}
-            >
-              <Heart
-                className={`h-4 w-4 ${isWishlisted ? 'fill-current' : ''}`}
-              />
-            </Button>
-          </div>
+        </Link>
+        <div className="absolute right-3 top-3 opacity-0 transition-all duration-300 group-hover:opacity-100">
+          <Button
+            variant="secondary"
+            size="icon"
+            onClick={toggleWishlist}
+            className={`${
+              isWishlisted
+                ? 'bg-teal-600 text-white hover:bg-teal-700'
+                : 'bg-white text-slate-600 hover:bg-teal-50'
+            } rounded-full shadow-sm`}
+          >
+            <Heart
+              className={`h-4 w-4 ${isWishlisted ? 'fill-current' : ''}`}
+            />
+          </Button>
         </div>
-        <CardContent className="flex flex-1 flex-col gap-3 p-5">
-          {product.brand && (
-            <p className="text-xs font-semibold uppercase tracking-wide text-teal-600">
-              {product.brand}
-            </p>
-          )}
-          <h3 className="line-clamp-2 min-h-[2.6rem] font-semibold text-slate-900 transition-colors group-hover:text-teal-600">
+      </div>
+      <CardContent className="flex flex-1 flex-col gap-3 p-5">
+        {product.brand && (
+          <p className="text-xs font-semibold uppercase tracking-wide text-teal-600">
+            {product.brand}
+          </p>
+        )}
+        <Link to={`/products/${product.id}`} className="block">
+          <h3 className="line-clamp-2 min-h-[2.6rem] font-semibold text-slate-900 transition-colors hover:text-teal-600">
             {product.name}
           </h3>
-          <div className="flex items-center gap-2 text-sm">
-            <div className="flex items-center gap-[2px] text-yellow-400">
-              {[...Array(5)].map((_, index) => (
-                <Star
-                  key={index}
-                  className={`h-4 w-4 ${
-                    index < Math.round(averageRating)
-                      ? 'fill-yellow-400 text-yellow-400'
-                      : 'text-slate-300'
-                  }`}
-                />
-              ))}
-            </div>
-            <span className="text-xs text-slate-500">({totalReviews})</span>
+        </Link>
+        <div className="flex items-center gap-2 text-sm">
+          <div className="flex items-center gap-[2px] text-yellow-400">
+            {[...Array(5)].map((_, index) => (
+              <Star
+                key={index}
+                className={`h-4 w-4 ${
+                  index < Math.round(averageRating)
+                    ? 'fill-yellow-400 text-yellow-400'
+                    : 'text-slate-300'
+                }`}
+              />
+            ))}
           </div>
-          <div className="mt-auto flex items-center justify-between">
-            <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-semibold text-slate-900">
-                ${product.price.toFixed(2)}
+          <span className="text-xs text-slate-500">({totalReviews})</span>
+        </div>
+        <div className="mt-auto space-y-3">
+          <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+            <span className="text-xl font-semibold text-slate-900 sm:text-2xl">
+              ${product.price.toFixed(2)}
+            </span>
+            {discountPercentage > 0 && (
+              <span className="text-xs text-slate-500 line-through sm:text-sm">
+                ${labeledPrice.toFixed(2)}
               </span>
-              {discountPercentage > 0 && (
-                <span className="text-sm text-slate-500 line-through">
-                  ${labeledPrice.toFixed(2)}
-                </span>
-              )}
-            </div>
+            )}
           </div>
+        </div>
+        <div className="mt-4 flex flex-col gap-2 sm:flex-row">
           <Button
             onClick={handleAddToCart}
             disabled={product.stock === 0 || isAddingToCart}
-            className="w-full rounded-full bg-teal-600 py-3 text-sm font-semibold text-white hover:bg-teal-700"
+            className="h-11 w-full flex-1 rounded-full bg-teal-600 text-sm font-semibold text-white hover:bg-teal-700 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {isAddingToCart ? (
               'Adding…'
@@ -405,9 +412,21 @@ function OfferProductCard({ product }: { product: Product }) {
               </span>
             )}
           </Button>
-        </CardContent>
-      </Card>
-    </Link>
+          <Button
+            asChild
+            variant="outline"
+            className="h-11 w-full flex-1 rounded-full border border-slate-200 text-sm font-semibold transition-colors hover:border-teal-500 hover:text-teal-600"
+          >
+            <Link
+              to={`/products/${product.id}`}
+              className="flex h-full w-full items-center justify-center"
+            >
+              View
+            </Link>
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -562,7 +581,7 @@ function HotOffers() {
         </p>
       </div>
       {loading ? (
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {[...Array(8)].map((_, index) => (
             <Card
               key={index}
@@ -594,7 +613,7 @@ function HotOffers() {
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {offers.map((product) => (
               <OfferProductCard key={product.id} product={product} />
             ))}
