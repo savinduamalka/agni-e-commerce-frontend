@@ -187,11 +187,11 @@ export const ProductCard = ({ product }: ProductCardProps) => {
         {/* Price */}
         <div className="flex items-center gap-2">
           <span className="text-xl font-bold text-slate-900 sm:text-2xl">
-            ${displayPrice.toFixed(2)}
+            Rs {displayPrice.toFixed(2)}
           </span>
           {discountPercent > 0 && (
             <span className="text-xs text-gray-400 line-through sm:text-sm">
-              ${product.price.toFixed(2)}
+              Rs {product.price.toFixed(2)}
             </span>
           )}
         </div>

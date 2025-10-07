@@ -386,11 +386,11 @@ function OfferProductCard({ product }: { product: Product }) {
         <div className="mt-auto space-y-3">
           <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
             <span className="text-xl font-semibold text-slate-900 sm:text-2xl">
-              ${product.price.toFixed(2)}
+              Rs {product.price.toFixed(2)}
             </span>
             {discountPercentage > 0 && (
               <span className="text-xs text-slate-500 line-through sm:text-sm">
-                ${labeledPrice.toFixed(2)}
+                Rs {labeledPrice.toFixed(2)}
               </span>
             )}
           </div>

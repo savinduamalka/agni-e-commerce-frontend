@@ -11,10 +11,12 @@ const MobileCheckoutBar = ({ cart }: MobileCheckoutBarProps) => {
       <div className="flex items-center justify-between mb-3">
         <div>
           <p className="text-sm text-muted-foreground">Total</p>
-          <p className="text-lg font-bold">${cart.totalPrice.toFixed(2)}</p>
+          <p className="text-lg font-bold">Rs {cart.totalPrice.toFixed(2)}</p>
         </div>
         <div className="text-right">
-          <p className="text-sm text-muted-foreground">{cart.totalItems} items</p>
+          <p className="text-sm text-muted-foreground">
+            {cart.totalItems} items
+          </p>
           <p className="text-sm text-green-600">Free shipping</p>
         </div>
       </div>

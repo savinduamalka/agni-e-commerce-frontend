@@ -40,7 +40,7 @@ export const ProductItem = ({ product }: ProductItemProps) => {
         </div>
         <div className="flex flex-wrap items-center gap-3 text-sm">
           <span className="text-xl font-bold text-slate-900">
-            ${product.price.toFixed(2)}
+            Rs {product.price.toFixed(2)}
           </span>
           {product.isOffer && product.offerPercentage && (
             <span className="rounded-full bg-teal-50 px-2.5 py-[3px] text-xs font-semibold text-teal-600">

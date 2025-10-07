@@ -273,13 +273,13 @@ const ProductDetailPage = () => {
 
   const productUrl = typeof window !== 'undefined' ? window.location.href : '';
   const shareTitle = `${product.name} • Agni Online Store`;
-  const formattedPrice = `$${product.price.toFixed(2)}`;
+  const formattedPrice = `Rs ${product.price.toFixed(2)}`;
   const savingsLine =
     discountPercentage > 0
       ? `Now ${formattedPrice} (${discountPercentage}% off the original price).`
       : `Only ${formattedPrice} right now.`;
   const shareMessage = `${product.name}: ${savingsLine}`;
-  const shareFooter = 'Free delivery on orders $50+ and easy 30-day returns.';
+  const shareFooter = 'Free delivery on orders Rs 50+ and easy 30-day returns.';
   const shareBody = `${shareMessage}\n${shareFooter}\n\nShop now: ${productUrl}`;
   const shareData = {
     title: shareTitle,
@@ -511,15 +511,15 @@ const ProductDetailPage = () => {
               <div className="bg-gradient-to-r from-teal-50 to-green-50 rounded-xl p-6 border border-teal-100">
                 <div className="flex items-baseline gap-3">
                   <span className="text-4xl font-bold text-teal-700">
-                    ${product.price.toFixed(2)}
+                    Rs {product.price.toFixed(2)}
                   </span>
                   {product.isOffer && product.labeledPrice > product.price && (
                     <>
                       <span className="text-xl text-gray-500 line-through">
-                        ${product.labeledPrice.toFixed(2)}
+                        Rs {product.labeledPrice.toFixed(2)}
                       </span>
                       <Badge variant="destructive" className="text-sm">
-                        Save $
+                        Save Rs
                         {(product.labeledPrice - product.price).toFixed(2)}
                       </Badge>
                     </>
@@ -674,7 +674,7 @@ const ProductDetailPage = () => {
                   <Truck className="h-6 w-6 mx-auto mb-2 text-teal-600" />
                   <p className="text-xs font-semibold">Free Delivery</p>
                   <p className="text-[10px] text-muted-foreground mt-1">
-                    On orders $50+
+                    On orders Rs 50+
                   </p>
                 </Card>
                 <Card className="p-4 text-center hover:shadow-md transition-shadow border-gray-200">
@@ -837,7 +837,7 @@ const ProductDetailPage = () => {
                         Shipping Information
                       </h4>
                       <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
-                        <li>Free standard shipping on orders over $50</li>
+                        <li>Free standard shipping on orders over Rs 50</li>
                         <li>Express shipping available at checkout</li>
                         <li>Delivery within 3-5 business days</li>
                         <li>International shipping available</li>

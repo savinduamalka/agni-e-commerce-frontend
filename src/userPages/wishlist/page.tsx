@@ -108,11 +108,11 @@ const WishlistListItem = ({ product }: { product: Product }) => {
           </div>
           <div className="text-right">
             <p className="text-2xl font-bold text-slate-900">
-              ${displayedPrice.toFixed(2)}
+              Rs {displayedPrice.toFixed(2)}
             </p>
             {product.offerPercentage && product.offerPercentage > 0 && (
               <p className="text-xs text-slate-400 line-through">
-                ${product.price.toFixed(2)}
+                Rs {product.price.toFixed(2)}
               </p>
             )}
           </div>
@@ -288,7 +288,7 @@ const WishlistPage = () => {
                       Potential total
                     </p>
                     <p className="text-2xl font-semibold text-slate-900">
-                      ${totalValue.toFixed(2)}
+                      Rs {totalValue.toFixed(2)}
                     </p>
                   </div>
                   <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">

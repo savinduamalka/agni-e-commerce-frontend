@@ -248,7 +248,7 @@ export const ProductFilters = ({ onClose }: ProductFiltersProps) => {
                     htmlFor="minPrice"
                     className="mb-1 block text-xs font-medium text-slate-500"
                   >
-                    Min ($)
+                    Min (Rs)
                   </label>
                   <Input
                     id="minPrice"
@@ -270,7 +270,7 @@ export const ProductFilters = ({ onClose }: ProductFiltersProps) => {
                     htmlFor="maxPrice"
                     className="mb-1 block text-xs font-medium text-slate-500"
                   >
-                    Max ($)
+                    Max (Rs)
                   </label>
                   <Input
                     id="maxPrice"
@@ -291,7 +291,7 @@ export const ProductFilters = ({ onClose }: ProductFiltersProps) => {
               {(minPrice || maxPrice) && (
                 <div className="flex items-center justify-between text-xs text-slate-500">
                   <span>
-                    Range: ${minPrice || '0'} - ${maxPrice || '∞'}
+                    Range: Rs {minPrice || '0'} - Rs {maxPrice || '∞'}
                   </span>
                   <Button
                     variant="ghost"

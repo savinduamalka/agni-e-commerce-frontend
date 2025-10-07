@@ -1,6 +1,11 @@
-
 import { Button } from '../ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '../ui/card';
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '../ui/card';
 import type { Cart } from '../../lib/cartTypes';
 
 interface CartSummaryProps {
@@ -16,7 +21,7 @@ const CartSummary = ({ cart }: CartSummaryProps) => {
       <CardContent className="space-y-3 sm:space-y-4 pb-3 sm:pb-6">
         <div className="flex justify-between text-sm sm:text-base">
           <span>Subtotal</span>
-          <span>${cart.totalPrice.toFixed(2)}</span>
+          <span>Rs {cart.totalPrice.toFixed(2)}</span>
         </div>
         <div className="flex justify-between text-sm sm:text-base">
           <span>Shipping</span>
@@ -25,7 +30,7 @@ const CartSummary = ({ cart }: CartSummaryProps) => {
         <div className="border-t pt-3">
           <div className="flex justify-between font-bold text-base sm:text-lg">
             <span>Total</span>
-            <span>${cart.totalPrice.toFixed(2)}</span>
+            <span>Rs {cart.totalPrice.toFixed(2)}</span>
           </div>
         </div>
       </CardContent>
