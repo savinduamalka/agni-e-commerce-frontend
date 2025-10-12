@@ -131,7 +131,7 @@ function HeroSection() {
   }, []);
 
   return (
-    <section className="pt-10 pb-16 sm:pt-12">
+  <section className="pt-0 pb-16 sm:pt-0">
       <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
         <Badge className="mb-6 inline-flex items-center gap-2 rounded-full bg-teal-50 px-5 py-2 text-xs font-semibold uppercase tracking-wide text-teal-700">
           <Sparkles className="h-4 w-4" />
